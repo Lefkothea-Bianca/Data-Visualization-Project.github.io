@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Data Visualization</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap" rel="stylesheet">
+
+    <link href="assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/library/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://unpkg.com/d3-v6-tip@1.0.6/build/d3-v6-tip.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bumbeishvili/d3-tip-for-v6@4/d3-tip.min.css">
+</head>
+
+<body>
+<header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+        <h1 class="logo"><a href="index.html">Data Visualization</a></h1>
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link active" href="index.html">World's Life Expectancy</a></li>
+                <li><a class="nav-link" href="about.html">About</a></li>
+                <li><a class="nav-link" href="credits.html">Credits</a></li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+    </div>
+</header>
+<div id="visualize">
+    <div class="container">
+        <nav>
+            <ol class="breadcrumb">
+                <li itemprop="itemListElement">
+                    <a itemprop="item" href="index.html">
+                        <span itemprop="name">World's Life Expectancy</span>
+                    </a>
+                    <meta itemprop="position" content="1" />
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="position-relative">
+                <svg id="my_dataviz" width="600" height="350"></svg>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer" class="text-center">
+    <div class="container">
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="index.html">World's Life Expectancy</a></li>
+            <li class="list-inline-item"><a href="about.html">About</a></li>
+            <li class="list-inline-item"><a href="credits.html">Credits</a></li>
+        </ul>
+        <div class="credits">
+            Designed by Kalivas, Katsina and Tsantaki
+        </div>
+    </div>
+</div>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<script>
+    const mapSvg = d3.select("svg"), width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
+
+    // Map and projection
+    const path = d3.geoPath();
+    const projection = d3.geoMercator().scale(90).center([0,20]).translate([width / 2, height / 2]);
+
+    // Data and color scale
+    let map = new Map()
+    let mapTooltip = setupMapTooltip();
+    const mapColorScale = setupMapColorScale();
+
+    loadData();
+
+    function loadData() {
+        Promise.all([
+            d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"),
+            d3.csv("Life_Expectancy_Data.csv", function(d) {
+                map.set(d.Country, d.Life_Expectancy)
+            })
+        ]).then(function(loadData){
+            let data = loadData[0]
+            drawWorldMap(data);
+        })
+    }
+    function setupMapTooltip()  {
+        return d3.tip()
+            .attr('id', 'd3-tip')
+            .html(function(d) {
+                console.log(d);
+                var html = "<div class='tooltipHeader'><strong>" + "tooltip" + "</strong></div>";
+                return html;
+            });
+    }
+    function setupMapColorScale()  {
+        return d3.scaleThreshold()
+            .domain([30, 40, 50, 60, 70, 80, 90])
+            .range(d3.schemeBlues[7]);
+    }
+    function drawWorldMap(data) {
+        mapSvg.append("g").selectAll("path")
+            .data(data.features)
+            .join("path")
+            // draw each country
+            .attr("d", d3.geoPath().projection(projection))
+            // set the color of each country
+            .attr("fill", function (d) {
+                d.value = map.get(d.properties.name) || 0;
+                if (d.value == 0) {
+                    console.log(d);
+                }
+                var lifeExpectancy = parseInt(d.value)
+                return mapColorScale(lifeExpectancy);
+            })
+            .attr("class", function(d){ return "Country" } )
+            .on("mouseover", onMapMouseOver)
+            .on("mouseleave", onMapMouseLeave )
+            .call(mapTooltip);
+    }
+    function onMapMouseOver(d) {
+        mapTooltip.show(d);
+        d3.select(this).transition().duration(100).style("stroke", "black")
+    }
+    function onMapMouseLeave(d) {
+        mapTooltip.hide(d);
+        d3.select(this).transition().duration(100).style("stroke", "transparent")
+    }
+
+</script>
+<script src="assets/library/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/library/typed.js/typed.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
