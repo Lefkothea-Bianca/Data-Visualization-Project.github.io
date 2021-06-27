@@ -15,7 +15,7 @@ body {
 .x.axis path {
   display: none;
 }
-#d3-tip {
+.customTooltip{
   font-size: 14px;
   line-height: 1.5;
   padding: 10px;
@@ -24,7 +24,25 @@ body {
   border-radius: 4px;
   font-weight: 300;
 }
-#d3-tip:after {
+
+.tooltipHeader {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.tooltipSubheader {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.chartLegend{
+  background-color: #e9ecef82;
+  padding: 5px;
+  width: 600px;
+  border-radius: 10px;
+}
+
+/*#d3-tip:after {
   box-sizing: border-box;
   display: inline;
   font-size: 10px;
@@ -40,10 +58,7 @@ body {
   top: 100%;
   left: 0;
 }
-.tooltipHeader {
-  font-size: 17px;
-  margin-bottom: 10px;
-}
+*/
 
 a {
   color: #00796b;
