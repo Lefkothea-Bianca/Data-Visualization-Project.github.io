@@ -42,6 +42,16 @@ body {
   border-radius: 10px;
 }
 
+.diagramWrapper {
+  border: 2px solid #e9ecef;
+}
+
+.legend {
+  font-size: 12px;
+  position: absolute;
+  bottom: 0;
+}
+
 /*#d3-tip:after {
   box-sizing: border-box;
   display: inline;

@@ -13,6 +13,7 @@
     <link href="assets/library/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3-legend.susielu.com/d3-legend.min.js"></script>
     <script src="https://unpkg.com/d3-v6-tip@1.0.6/build/d3-v6-tip.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bumbeishvili/d3-tip-for-v6@4/d3-tip.min.css">
 </head>
@@ -35,8 +36,15 @@
     <div class="container margin-top-20">
         <div class="row justify-content-between">
             <div class="position-relative">
-                <h6 class="chartLegend">Life Expectancy, 2019</h6>
-                <svg id="my_dataviz" width="600" height="350"></svg>
+                <div class="d-table-row">
+                    <div id="worldMap" class="diagramWrapper d-table-cell">
+                        <h6 class="chartLegend">Life Expectancy, 2019</h6>
+                        <svg id="my_dataviz" width="600" height="350"></svg>
+                    </div>
+                    <div class="diagramWrapper d-table-cell">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -83,15 +91,33 @@
             })
         ]).then(function(loadData){
             mapColorScale = setupMapColorScale();
+            setupMapLegend();
             sortInfoMapByYear();
             drawWorldMap(loadData[0]);
         })
     }
     function setupMapColorScale()  {
-        return d3.scaleThreshold()
+
+        let colorScale = d3.scaleThreshold()
             .domain([55, 65, 75, 80])
             .range(["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"])
             .unknown("#cccccc");
+        return colorScale;
+    }
+    function setupMapLegend() {
+        var legend = d3.legendColor()
+            .labelFormat(d3.format(",.0f"))
+            .labels(d3.legendHelpers.thresholdLabels)
+            .scale(mapColorScale);
+
+        var div = d3.select("#worldMap").append("div").attr("class", "legend");
+        var svg = div.append("svg");
+        svg.append("g")
+            .attr("class", "legendQuant")
+            .attr("transform", "translate(20,40)");
+
+        svg.select(".legendQuant")
+            .call(legend);
     }
     function drawWorldMap(data) {
         mapSvg.append("g").selectAll("path")
@@ -151,16 +177,20 @@
         } )
     }
     function getMapTooltipHtml(d) {
-        if(d.info == null) return "<div><strong>No Data</strong></div>";
-        let latestYearInfo = d.info.lifeExpectancyInfoPerYear[0];
-        var html = "<div class='tooltipHeader'><strong>" + d.info.location + "</strong></div>";
-        html+= "<div class='tooltipSubheader'><strong>Life Expectancy</strong></div>";
-        html+= "<div><strong>Males: </strong>" + latestYearInfo.lifeExpectancyMale + " years</div>";
-        html+= "<div><strong>Females: </strong>" + latestYearInfo.lifeExpectancyFemale + " years</div>";
-        html+= "<hr>";
-        html+= "<div class='tooltipSubheader'><strong>Healthy Life Expectancy</strong></div>";
-        html+= "<div><strong>Males: </strong>" + latestYearInfo.healthyLifeExpectancyMale + " years</div>";
-        html+= "<div><strong>Females: </strong>" + latestYearInfo.healthyLifeExpectancyFemale + " years</div>";
+        var html = "<div class='tooltipHeader'><strong>" + d.properties.name + "</strong></div>";
+        if(d.info == null){
+            html+="<div class='tooltipSubheader'><strong>No Data</strong></div>";
+        }
+        else {
+            let latestYearInfo = d.info.lifeExpectancyInfoPerYear[0];
+            html+= "<div class='tooltipSubheader'><strong>Life Expectancy</strong></div>";
+            html+= "<div><strong>Males: </strong>" + latestYearInfo.lifeExpectancyMale + " years</div>";
+            html+= "<div><strong>Females: </strong>" + latestYearInfo.lifeExpectancyFemale + " years</div>";
+            html+= "<hr>";
+            html+= "<div class='tooltipSubheader'><strong>Healthy Life Expectancy</strong></div>";
+            html+= "<div><strong>Males: </strong>" + latestYearInfo.healthyLifeExpectancyMale + " years</div>";
+            html+= "<div><strong>Females: </strong>" + latestYearInfo.healthyLifeExpectancyFemale + " years</div>";
+        }
         return html;
     }
 
