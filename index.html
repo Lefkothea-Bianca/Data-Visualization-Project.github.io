@@ -15,6 +15,7 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3-legend.susielu.com/d3-legend.min.js"></script>
     <script src="https://unpkg.com/d3-v6-tip@1.0.6/build/d3-v6-tip.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bumbeishvili/d3-tip-for-v6@4/d3-tip.min.css">
 </head>
 <body>
@@ -40,12 +41,14 @@
                         <div class="child diagramComponentWidth">
                             <div id="worldMap" class="diagramWrapper">
                                 <h6 class="chartLegend">Life Expectancy, <span id="yearElement">2019</span></h6>
-                                <svg id="my_dataviz" width="600" height="350"></svg>
+                                <svg id="lifeExpectancyWorldMap" width="580" height="350"></svg>
                             </div>
                         </div>
                         <div class="child diagramComponentWidth">
-                            <h6 class="chartLegend">Something Else</h6>
-                            <svg width="600" height="350"></svg>
+                            <div id="areaChart" class="diagramWrapper">
+                                <h6 class="chartLegend"><span id="countryElement">The World</span> - Healthy life expectancy and years lived with disability</h6>
+                                <svg id="lifeExpectancyAreaChart" width="580" height="350"></svg>
+                            </div>
                         </div>
                     </div>
 
@@ -81,6 +84,7 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/userEvents.js"></script>
     <script src="assets/js/worldMap.js"></script>
+    <script src="assets/js/lifeExpectancyAreaChart.js"></script>
     <script src="assets/js/dataSetup.js"></script>
     <script src="assets/js/visualization.js"></script>
     <script src="mapHelper.js"></script>

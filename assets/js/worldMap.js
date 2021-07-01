@@ -1,8 +1,12 @@
 ﻿function drawWorldMap(data) {
+    const mapSvg = d3.select("#lifeExpectancyWorldMap"), width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
+    const projection = d3.geoMercator().scale(90).center([0, 20]).translate([width / 2, height / 2]);
+
     mapSvg.append("g").selectAll("path")
         .data(data.features)
         .join("path")
         .attr("d", d3.geoPath().projection(projection))
+        .attr("class", function(d){ return "Country" } )
         .attr("fill", function (d) {
             d.info = map.get(d.properties.name) || null;
             let selectedYearInfo = d.info ? d.info.lifeExpectancyInfoPerYear.filter(_ => _.year == selectedYear) : null;

@@ -1,11 +1,8 @@
-﻿const mapSvg = d3.select("svg"), width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
-const projection = d3.geoMercator().scale(90).center([0, 20]).translate([width / 2, height / 2]);
-
-// Data and color scale
-let fileData;
+﻿let fileData;
 let map = new Map();
 let mapColorScale;
 let selectedYear;
+let selectedCountry;
 
 //User Input Events
 sliderEvents();
@@ -25,7 +22,8 @@ function loadData() {
         fileData = loadedFileData;
         mapColorScale = setupMapColorScale();
         setupMapLegend();
-        //sortInfoMapByYear();
+        sortInfoMapByYear();
         drawWorldMap(fileData[0]);
+        drawLifeExpectancyAreaChart(map);
     })
 }

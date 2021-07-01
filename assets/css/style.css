@@ -514,6 +514,16 @@ p {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.6;
+  shape-rendering: crispEdges
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
 /*--- Footer ---*/
 #footer {
   background: rgba(0, 0, 0, 0.75);
