@@ -2,19 +2,18 @@ var svg;
 var chart = d3.select("#lifeExpectancyAreaChart");
 var keys = ["healthyLifeExpectancy","yearsLivedWithDisability"];
 
-var margin = {top: 60, right: 30, bottom: 55, left: 55},
-    width = +chart.attr("width") - margin.left - margin.right,
-    height = +chart.attr("height") - margin.top - margin.bottom;
+var areaChartMargin = {top: 60, right: 30, bottom: 55, left: 55},
+    areaChartWidth = +chart.attr("width") - areaChartMargin.left - areaChartMargin.right,
+    areaChartHeight = +chart.attr("height") - areaChartMargin.top - areaChartMargin.bottom;
 
 function drawLifeExpectancyAreaChart(data) {
 
     svg = chart.append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", areaChartWidth + areaChartMargin.left + areaChartMargin.right)
+        .attr("height", areaChartHeight + areaChartMargin.top + areaChartMargin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + areaChartMargin.left + "," + areaChartMargin.top + ")");
 
-    selectedCountry = "USA";
     drawAreaChart(data);
 }
 
@@ -24,28 +23,28 @@ function reDrawAreaChart() {
 }
 
 function drawAreaChart(data) {
-
     var dataForSelectedCountry = getDisplayData(data);
+
     // Add X axis
     var x = d3.scaleLinear()
         .domain(d3.extent(dataForSelectedCountry, function(d) { return d.year; }))
-        .range([ 0, width ]);
+        .range([ 0, areaChartWidth ]);
     svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + areaChartHeight + ")")
         .call(d3.axisBottom(x).tickFormat(d3.format("d")).ticks(5));
 
     // Add Y axis
     var y = d3.scaleLinear()
         .domain([0, 90])
-        .range([ height, 0 ]);
+        .range([ areaChartHeight, 0 ]);
     svg.append("g")
         .call(d3.axisLeft(y));
 
     // Add X axis label:
     svg.append("text")
     .attr("text-anchor", "end")
-    .attr("x", width)
-    .attr("y", height+40 )
+    .attr("x", areaChartWidth)
+    .attr("y", areaChartHeight+40 )
     .text("Time (year)");
     
     // Add Y axis label:
@@ -56,12 +55,13 @@ function drawAreaChart(data) {
     .text("Life expectancy")
     .attr("text-anchor", "start")
 
+    // Add Grid Lines
     svg.append("g")
         .attr("class","grid")
-        .attr("transform","translate(0," + height + ")")
+        .attr("transform","translate(0," + areaChartHeight + ")")
         .style("stroke-dasharray",("3,3"))
         .call(make_x_gridlines(x)
-            .tickSize(-height)
+            .tickSize(-areaChartHeight)
             .tickFormat("")
         )
 
@@ -69,7 +69,7 @@ function drawAreaChart(data) {
         .attr("class","grid")
         .style("stroke-dasharray",("3,3"))
         .call(make_y_gridlines(y)
-            .tickSize(-width)
+            .tickSize(-areaChartWidth)
             .tickFormat("")
         )
 
@@ -82,7 +82,7 @@ function drawAreaChart(data) {
         .domain(keys)
         .range(['rgba(153,213,148,1)','rgba(252,141,89,1)'])
 
-    //stack the data?
+    //stack the data
     var stackedData = d3.stack()
         .keys(keys)
         (dataForSelectedCountry);
@@ -132,7 +132,6 @@ function getLegend(d) {
             return "Years lived with disability";
     }
 }
-
 function make_x_gridlines(x) {
     return d3.axisBottom(x)
         .ticks(8)

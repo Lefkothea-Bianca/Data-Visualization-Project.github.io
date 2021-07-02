@@ -1,5 +1,11 @@
-﻿function drawWorldMap(data) {
-    const mapSvg = d3.select("#lifeExpectancyWorldMap"), width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
+﻿var mapSvg = d3.select("#lifeExpectancyWorldMap");
+
+function redrawWorldMap() {
+    mapSvg.selectAll('*').remove();
+    drawWorldMap(fileData[0]);
+}
+function drawWorldMap(data) {
+    var width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
     const projection = d3.geoMercator().scale(90).center([0, 20]).translate([width / 2, height / 2]);
 
     mapSvg.append("g").selectAll("path")
