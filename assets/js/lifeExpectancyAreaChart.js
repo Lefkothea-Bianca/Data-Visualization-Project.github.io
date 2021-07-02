@@ -102,13 +102,13 @@ function drawAreaChart(data) {
 
     // Legend
     var size = 15;
-    var xStart = 330;
+    var xStart = 300;
     svg.selectAll("myrect")
       .data(keys)
       .enter()
       .append("rect")
         .attr("x", xStart)
-        .attr("y", function(d,i){ return i*(size+2) - 50}) 
+        .attr("y", function(d,i){ return i*(size+2) - 50})
         .attr("width", size)
         .attr("height", size)
         .style("fill", function(d){ return colorLegend(d)})
@@ -118,8 +118,8 @@ function drawAreaChart(data) {
       .data(keys)
       .enter()
       .append("text")
-        .attr("x", xStart + size*1.7)
-        .attr("y", function(d,i){ return i*(size+2) + (size/2) - 50}) 
+        .attr("x", xStart + size*1.6)
+        .attr("y", function(d,i){ return i*(size+5) + (size/2) - 50})
         .text(function(d){ return getLegend(d)})
         .attr("class", "areaLegendText")
 }
