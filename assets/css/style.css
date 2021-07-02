@@ -3,6 +3,9 @@ body {
   font: 16px sans-serif;
   font-family: "Source Serif Pro";
 }
+.relative {
+  position: relative;
+}
 #canvas {
   font: 14px sans-serif;
 }
@@ -41,12 +44,36 @@ body {
     color: #41464b;
 }
 
-.diagramComponentWidth {
-    width: 600px;
+.diagramHeader {
+  font-size: 1rem;
+}
+
+.diagramSubheader {
+  font-size: 0.9rem;
+  color:gray;
+}
+
+.diagramComponent {   
+    width: 594px;
+}
+
+.rangeLabel {
+  display: inline-block;
+  width: 7%;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .diagramWrapper {
   border: 2px solid #e9ecef;
+  margin: 0 5px;
+}
+
+.diagramElementWrapper {
+  margin: 0 5px;
+  border: 2px solid transparent;
 }
 
 .legend {
@@ -55,42 +82,82 @@ body {
   bottom: 0;
 }
 
-.slidecontainer {
+.areaLegendText {
+  alignment-baseline: middle;
+  font-size: 12px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 20px 0;
   width: 100%;
 }
 
-.slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 15px;
-  border-radius: 5px;
-  background: #d3d3d3;
+input[type=range]:focus {
   outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
 }
 
-.slider:hover {
-  opacity: 1;
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #03a9f4;
+  border-radius: 25px;
 }
 
-.slider::-webkit-slider-thumb {
+input[type=range]::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px 0 rgba(0,0,0, 1);
+  cursor: pointer;
   -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: gray;
-  cursor: pointer;
+  margin-top: -8px;
 }
 
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: gray;
-  cursor: pointer;
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #03a9f4;
+}
+
+.range-wrap {
+  position: relative;
+  width: 84%;
+  display: inline-block;
+}
+
+.range-value{
+  position: absolute;
+  top: -50%;
+}
+
+.range-value span{
+  width: 40px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 12px;
+  display: block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 6px;
+}
+
+.range-value span:before{
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 6px solid rgba(0,0,0,0.6);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
 }
 
 .parent {

@@ -2,7 +2,7 @@ var svg;
 var chart = d3.select("#lifeExpectancyAreaChart");
 var keys = ["healthyLifeExpectancy","yearsLivedWithDisability"];
 
-var margin = {top: 20, right: 30, bottom: 30, left: 55},
+var margin = {top: 60, right: 30, bottom: 55, left: 55},
     width = +chart.attr("width") - margin.left - margin.right,
     height = +chart.attr("height") - margin.top - margin.bottom;
 
@@ -41,12 +41,20 @@ function drawAreaChart(data) {
     svg.append("g")
         .call(d3.axisLeft(y));
 
+    // Add X axis label:
     svg.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Years");
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height+40 )
+    .text("Time (year)");
+    
+    // Add Y axis label:
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 0)
+    .attr("y", -20 )
+    .text("Life expectancy")
+    .attr("text-anchor", "start")
 
     svg.append("g")
         .attr("class","grid")
@@ -56,6 +64,7 @@ function drawAreaChart(data) {
             .tickSize(-height)
             .tickFormat("")
         )
+
     svg.append("g")
         .attr("class","grid")
         .style("stroke-dasharray",("3,3"))
@@ -68,6 +77,10 @@ function drawAreaChart(data) {
     var color = d3.scaleOrdinal()
         .domain(keys)
         .range(['rgba(153,213,148,0.5)','rgba(252,141,89,0.5)'])
+
+    var colorLegend = d3.scaleOrdinal()
+        .domain(keys)
+        .range(['rgba(153,213,148,1)','rgba(252,141,89,1)'])
 
     //stack the data?
     var stackedData = d3.stack()
@@ -86,6 +99,38 @@ function drawAreaChart(data) {
             .y0(function(d) { return y(d[0]); })
             .y1(function(d) { return y(d[1]); })
         );
+
+    // Legend
+    var size = 15;
+    var xStart = 330;
+    svg.selectAll("myrect")
+      .data(keys)
+      .enter()
+      .append("rect")
+        .attr("x", xStart)
+        .attr("y", function(d,i){ return i*(size+2) - 50}) 
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function(d){ return colorLegend(d)})
+
+    // Legend Text
+    svg.selectAll("mylabels")
+      .data(keys)
+      .enter()
+      .append("text")
+        .attr("x", xStart + size*1.7)
+        .attr("y", function(d,i){ return i*(size+2) + (size/2) - 50}) 
+        .text(function(d){ return getLegend(d)})
+        .attr("class", "areaLegendText")
+}
+
+function getLegend(d) {
+    switch(d) {
+        case "healthyLifeExpectancy":
+            return "Healthy life expectancy";
+        case "yearsLivedWithDisability":
+            return "Years lived with disability";
+    }
 }
 
 function make_x_gridlines(x) {

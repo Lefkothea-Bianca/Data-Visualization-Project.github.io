@@ -34,37 +34,44 @@
     </header>
     <div id="visualize">
         <div class="container"><h2>World's Life Expectancy</h2></div>
-        <div class="container margin-top-20">
-            <div class="row justify-content-between">
-                <div class="position-relative">
-                    <div class="parent">
-                        <div class="child diagramComponentWidth">
-                            <div id="worldMap" class="diagramWrapper">
-                                <h6 class="chartLegend">Life Expectancy, <span id="yearElement">2019</span></h6>
-                                <svg id="lifeExpectancyWorldMap" width="580" height="350"></svg>
-                            </div>
+        <div class="container margin-top-20">                          
+            <div class="parent">
+                <div class="child diagramComponent">
+                    <div id="worldMap" class="diagramWrapper relative">
+                        <div class="chartLegend">
+                            <div class="diagramHeader">Life Expectancy</div>              
+                            <div class="diagramSubheader" id="yearElement">2019</div>
                         </div>
-                        <div class="child diagramComponentWidth">
-                            <div id="areaChart" class="diagramWrapper">
-                                <h6 class="chartLegend"><span id="countryElement">The World</span> - Healthy life expectancy and years lived with disability</h6>
-                                <svg id="lifeExpectancyAreaChart" width="580" height="350"></svg>
-                            </div>
-                        </div>
+                        <svg id="lifeExpectancyWorldMap" width="580" height="350"></svg>
                     </div>
-
                 </div>
-            </div>
-            <div class="row justify-content-between">
-                <div class="position-relative">
-                    <div class="diagramComponentWidth margin-top-20">
-                        <div class="slidecontainer">
-                            <input type="range" min="1990" max="2019" value="2019" class="slider" id="myRange">
+                <div class="child diagramComponent">
+                    <div id="areaChart" class="diagramWrapper">
+                        <div class="chartLegend">
+                            <div class="diagramHeader">Healthy life expectancy and years lived with disability</div>
+                            <div class="diagramSubheader" id="countryElement">The World</div>
                         </div>
+                        <svg id="lifeExpectancyAreaChart" width="580" height="350"></svg>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="container margin-top-20">
+            <div class="parent">      
+                <div class="child diagramComponent margin-top-20">
+                    <div class="slidecontainer diagramElementWrapper">
+                        <span class="rangeLabel">1990</span>
+                        <div class="range-wrap">
+                            <div class="range-value" id="rangeV"></div>
+                            <input type="range" class="range slider" min="1990" max="2019" value="2019" id="myRange">                          
+                        </div>               
+                        <span class="rangeLabel text-right">2019</span>
+                    </div>
+                </div>
+            </div>    
+        </div>
     </div>
+    
     <div id="footer" class="text-center">
         <div class="container">
             <ul class="list-inline">
