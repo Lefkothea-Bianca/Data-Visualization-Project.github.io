@@ -60,6 +60,11 @@ function sliderEvents() {
 
     slider.onchange = function () {
         redrawWorldMap();
+        if (selectedCountry != defaultLocation) {
+            d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
+            selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
+            selectedCountryElement.style("opacity", 1).style("stroke", "black");
+        }
     }
 }
 
@@ -95,7 +100,7 @@ function mapSvgInteractionEvents() {
 }
 
 function onMapSvgOrLegendClick(d) {
-    if (selectedCountry != "Global" && d.target.className.baseVal != "Country") {
+    if (selectedCountryElement != null && d.target.className.baseVal != "Country") {
         resetDefaultMapState();
         applyCountrySelectionChangeToCharts();
     }
@@ -105,6 +110,7 @@ function resetDefaultMapState() {
     selectedCountry = defaultLocation;
     d3.selectAll(".Country").transition().duration(100).style("opacity", 1);
     selectedCountryElement.transition().duration(100).style("stroke", "transparent");
+    selectedCountryElement = null;
 }
 
 function unselectCountry() {
