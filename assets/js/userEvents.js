@@ -1,28 +1,7 @@
-﻿const
-  range = document.getElementById('myRange'),
-  rangeV = document.getElementById('rangeV'),
-  setValue = ()=>{
-    const newValue = Number( (range.value - range.min) * 100 / (range.max - range.min) ),
-          newPosition = 10 - (newValue * 0.2);
-    rangeV.innerHTML = `<span>${range.value}</span>`;
-    rangeV.style.left = `calc(${newValue}% + (${newPosition}px))`;
-  };
-document.addEventListener("DOMContentLoaded", initializeRangeLabel);
-range.addEventListener('input', setValue);
-range.addEventListener("mouseover", function( event ) {
-    rangeV.style.display = "block";
-});
-range.addEventListener("mouseout", function( event ) {
-    rangeV.style.display = "none";
-});
-
-function initializeRangeLabel() {
-    setValue();
-    rangeV.style.display = "none";
-}
-
+﻿document.addEventListener("DOMContentLoaded", setupEvents);
 var defaultLocation = "Global";
-//copied from http://bl.ocks.org/espinielli/4d17fep7B6y5YxWkE9Sv2d7xpAGMpndA2yX4
+var selectedCountryElement;
+
 d3.helper = {};
 d3.helper.mapHelper = function(accessor){
     return function(selection){
@@ -53,19 +32,8 @@ d3.helper.mapHelper = function(accessor){
             tooltipDiv.html(tooltipText);
         })
         .on("click", function(d, i){
-            if (selectedCountry == i.info.location) {
-                selectedCountry = defaultLocation;
-                d3.selectAll(".Country").transition().duration(100).style("opacity", 1);
-                d3.select(this).transition().duration(100).style("stroke", "transparent");
-            }
-            else {
-                selectedCountry = i.info.location;
-                d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke", "transparent");
-                d3.select(this).transition().duration(100).style("opacity", 1).style("stroke", "black");
-            }
-            var countryElement = document.getElementById("countryElement");
-            countryElement.innerHTML = selectedCountry == defaultLocation ? "The World" : selectedCountry;
-            reDrawAreaChart();
+            selectedCountry == i.info.location ? unselectCountry() : selectCountry(i, this);
+            applyCountrySelectionChangeToCharts();
         })
         .on("mouseout", function(d, i){
             tooltipDiv.remove();
@@ -75,6 +43,11 @@ d3.helper.mapHelper = function(accessor){
         });
     };
 };
+
+function setupEvents() {
+    sliderEvents();
+    sliderTooltipEvents();
+}
 
 function sliderEvents() {
     var slider = document.getElementById("myRange");
@@ -88,4 +61,66 @@ function sliderEvents() {
     slider.onchange = function () {
         redrawWorldMap();
     }
+}
+
+function sliderTooltipEvents() {
+    const
+        range = document.getElementById('myRange'),
+        rangeV = document.getElementById('rangeV'),
+        setValue = ()=>{
+            const newValue = Number( (range.value - range.min) * 100 / (range.max - range.min) ),
+                newPosition = 10 - (newValue * 0.2);
+            rangeV.innerHTML = `<span>${range.value}</span>`;
+            rangeV.style.left = `calc(${newValue}% + (${newPosition}px))`;
+        };
+    range.addEventListener('input', setValue);
+    range.addEventListener("mouseover", function( event ) {
+        rangeV.style.display = "block";
+    });
+    range.addEventListener("mouseout", function( event ) {
+        rangeV.style.display = "none";
+    });
+
+    setValue();
+    rangeV.style.display = "none";
+}
+
+function mapSvgInteractionEvents() {
+    mapSvg.on("click", function(d){
+        onMapSvgOrLegendClick(d);
+    })
+    mapLegendSvg.on("click", function(d){
+        onMapSvgOrLegendClick(d);
+    })
+}
+
+function onMapSvgOrLegendClick(d) {
+    if (selectedCountry != "Global" && d.target.className.baseVal != "Country") {
+        resetDefaultMapState();
+        applyCountrySelectionChangeToCharts();
+    }
+}
+
+function resetDefaultMapState() {
+    selectedCountry = defaultLocation;
+    d3.selectAll(".Country").transition().duration(100).style("opacity", 1);
+    selectedCountryElement.transition().duration(100).style("stroke", "transparent");
+}
+
+function unselectCountry() {
+    resetDefaultMapState();
+    selectedCountryElement = null;
+}
+
+function selectCountry(i, element) {
+    selectedCountry = i.info.location;
+    selectedCountryElement = d3.select(element);
+    d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke", "transparent");
+    selectedCountryElement.transition().duration(100).style("opacity", 1).style("stroke", "black");
+}
+
+function applyCountrySelectionChangeToCharts() {
+    var countryElement = document.getElementById("countryElement");
+    countryElement.innerHTML = selectedCountry == defaultLocation ? "The World" : selectedCountry;
+    reDrawAreaChart();
 }

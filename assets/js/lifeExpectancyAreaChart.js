@@ -42,18 +42,18 @@ function drawAreaChart(data) {
 
     // Add X axis label:
     svg.append("text")
-    .attr("text-anchor", "end")
-    .attr("x", areaChartWidth)
-    .attr("y", areaChartHeight+40 )
-    .text("Time (year)");
-    
+        .attr("text-anchor", "end")
+        .attr("x", areaChartWidth)
+        .attr("y", areaChartHeight+40 )
+        .text("Time (year)");
+
     // Add Y axis label:
     svg.append("text")
-    .attr("text-anchor", "end")
-    .attr("x", 0)
-    .attr("y", -20 )
-    .text("Life expectancy")
-    .attr("text-anchor", "start")
+        .attr("text-anchor", "end")
+        .attr("x", 0)
+        .attr("y", -20 )
+        .text("Life expectancy")
+        .attr("text-anchor", "start")
 
     // Add Grid Lines
     svg.append("g")
@@ -104,9 +104,9 @@ function drawAreaChart(data) {
     var size = 15;
     var xStart = 300;
     svg.selectAll("myrect")
-      .data(keys)
-      .enter()
-      .append("rect")
+        .data(keys)
+        .enter()
+        .append("rect")
         .attr("x", xStart)
         .attr("y", function(d,i){ return i*(size+2) - 50})
         .attr("width", size)
@@ -115,9 +115,9 @@ function drawAreaChart(data) {
 
     // Legend Text
     svg.selectAll("mylabels")
-      .data(keys)
-      .enter()
-      .append("text")
+        .data(keys)
+        .enter()
+        .append("text")
         .attr("x", xStart + size*1.6)
         .attr("y", function(d,i){ return i*(size+5) + (size/2) - 50})
         .text(function(d){ return getLegend(d)})
@@ -159,7 +159,3 @@ function getDisplayData(data) {
     }
     return dataForSelectedCountry;
 }
-
-
-
-

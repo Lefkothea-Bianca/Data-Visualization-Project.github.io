@@ -4,8 +4,6 @@ let mapColorScale;
 let selectedYear;
 let selectedCountry = "Global";
 
-//User Input Events
-sliderEvents();
 //Load Data Files
 loadData();
 
@@ -27,9 +25,10 @@ function loadData() {
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
         mapColorScale = setupMapColorScale();
-        setupMapLegend();
         sortInfoMapByYear();
-        drawWorldMap(fileData[0]);
+
+        //Draw Charts
+        setupMap();
         drawLifeExpectancyAreaChart(map);
     })
 }

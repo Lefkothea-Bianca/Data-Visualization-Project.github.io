@@ -160,6 +160,15 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   margin-left: -5px;
 }
 
+.focus circle {
+  fill: black;
+  stroke: white;
+}
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
 .parent {
     display: table;
     height: 100%;

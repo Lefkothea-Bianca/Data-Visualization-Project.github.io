@@ -1,9 +1,17 @@
 ﻿var mapSvg = d3.select("#lifeExpectancyWorldMap");
+var mapLegendSvg;
+
+function setupMap() {
+    setupMapLegend();
+    drawWorldMap(fileData[0]);
+    mapSvgInteractionEvents();
+}
 
 function redrawWorldMap() {
     mapSvg.selectAll('*').remove();
     drawWorldMap(fileData[0]);
 }
+
 function drawWorldMap(data) {
     var width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
     const projection = d3.geoMercator().scale(90).center([0, 20]).translate([width / 2, height / 2]);
@@ -39,12 +47,11 @@ function setupMapLegend() {
         .scale(mapColorScale);
 
     var div = d3.select("#worldMap").append("div").attr("class", "legend");
-    var svg = div.append("svg").attr("width", 150).attr("height", 150);
-    svg.append("g")
+    mapLegendSvg = div.append("svg").attr("width", 150).attr("height", 150);
+    mapLegendSvg.append("g")
         .attr("class", "legendQuant")
         .attr("transform", "translate(20,40)");
-
-    svg.select(".legendQuant")
+    mapLegendSvg.select(".legendQuant")
         .call(legend);
 }
 
