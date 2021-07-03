@@ -93,14 +93,10 @@ function sliderTooltipEvents() {
         selectedYearSet = () => {
             selectedYear = yearElement.innerHTML = range.value;
         },
-        rangeAtStart = () => {
-            if (range.value == range.max){
-                range.value = (parseInt(range.min)-1).toString();
-            }
+        adjustRange = () => {
+            if (range.value == range.max) {range.value = range.min;}
+            else { range.value = (parseInt(range.value)+1).toString(); }
         },
-        rangeMoveForward = () => {
-            range.value = (parseInt(range.value)+1).toString();
-        }
         pauseOnSliderEnd = () => {
             if (range.value == range.max) { pauseClip() }
         },
@@ -120,8 +116,7 @@ function sliderTooltipEvents() {
             clipIconChange();
             rangeTooltipShow();
             interval = window.setInterval(()=>{
-                rangeAtStart();
-                rangeMoveForward();
+                adjustRange();
                 rangeTooltipSetValue();
                 selectedYearSet();
                 onSliderChangeEvents();
