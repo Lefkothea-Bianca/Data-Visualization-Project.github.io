@@ -21,7 +21,8 @@ function drawWorldMap(data) {
         .join("path")
         .attr("d", d3.geoPath().projection(projection))
         .attr("class", function(d){ return "Country" } )
-        .style("stroke", "rgba(51,51,51,0.2)")
+        .style("stroke", "black")
+        .style("stroke-width", 0.2)
         .attr("fill", function (d) {
             d.info = map.get(d.properties.name) || null;
             let selectedYearInfo = d.info ? d.info.lifeExpectancyInfoPerYear.filter(_ => _.year == selectedYear) : null;
@@ -31,6 +32,15 @@ function drawWorldMap(data) {
         .call(d3.helper.mapHelper(
             function (i, d) { return getMapTooltipHtml(d); }
         ))
+
+    var zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .on('zoom', function(event, d) {
+            mapSvg.selectAll('path')
+                .attr('transform', event.transform);
+        });
+
+    mapSvg.call(zoom);
 }
 
 function setupMapColorScale() {
@@ -50,10 +60,10 @@ function setupMapLegend() {
         .scale(mapColorScale);
 
     var div = d3.select("#worldMap").append("div").attr("class", "legend");
-    mapLegendSvg = div.append("svg").attr("width", 150).attr("height", 150);
+    mapLegendSvg = div.append("svg").attr("width", 130).attr("height", 120);
     mapLegendSvg.append("g")
         .attr("class", "legendQuant")
-        .attr("transform", "translate(20,40)");
+        .attr("transform", "translate(20,20)");
     mapLegendSvg.select(".legendQuant")
         .call(legend);
 }

@@ -1,6 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", setupEvents);
 var defaultLocation = "Global";
-var defaultStroke = "rgba(51,51,51,0.2)";
+var defaultStrokeWidth = 0.2;
 var selectedCountryElement;
 
 d3.helper = {};
@@ -22,7 +22,7 @@ d3.helper.mapHelper = function(accessor){
 
             var tooltipText = accessor(d, i) || '';
             tooltipDiv.html(tooltipText);
-            d3.select(this).transition().duration(100).style("stroke", "black");
+            d3.select(this).transition().duration(100).style("stroke-width", 1);
         })
         .on('mousemove', function(d, i) {
             var absoluteMousePos = d3.pointer(event, bodyNode);
@@ -39,7 +39,7 @@ d3.helper.mapHelper = function(accessor){
         .on("mouseout", function(d, i){
             tooltipDiv.remove();
             if (!i.info || selectedCountry != i.info.location) {
-                d3.select(this).transition().duration(100).style("stroke", defaultStroke);
+                d3.select(this).transition().duration(100).style("stroke-width", defaultStrokeWidth);
             }
         });
     };
@@ -69,7 +69,7 @@ function onSliderChangeEvents() {
     if (selectedCountry != defaultLocation) {
         d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
         selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
-        selectedCountryElement.style("opacity", 1).style("stroke", "black");
+        selectedCountryElement.style("opacity", 1).style("stroke-width", 1);
     }
 }
 
@@ -162,7 +162,7 @@ function onMapSvgOrLegendClick(d) {
 function resetDefaultMapState() {
     selectedCountry = defaultLocation;
     d3.selectAll(".Country").transition().duration(100).style("opacity", 1);
-    selectedCountryElement.transition().duration(100).style("stroke", defaultStroke);
+    selectedCountryElement.transition().duration(100).style("stroke-width", defaultStrokeWidth);
     selectedCountryElement = null;
 }
 
@@ -174,8 +174,8 @@ function unselectCountry() {
 function selectCountry(i, element) {
     selectedCountry = i.info.location;
     selectedCountryElement = d3.select(element);
-    d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke", defaultStroke);
-    selectedCountryElement.transition().duration(100).style("opacity", 1).style("stroke", "black");
+    d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke-width", defaultStrokeWidth);
+    selectedCountryElement.transition().duration(100).style("opacity", 1).style("stroke-width", 1);
 }
 
 function applyCountrySelectionChangeToCharts() {
