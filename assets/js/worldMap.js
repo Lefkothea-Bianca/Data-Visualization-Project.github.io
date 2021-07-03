@@ -21,6 +21,7 @@ function drawWorldMap(data) {
         .join("path")
         .attr("d", d3.geoPath().projection(projection))
         .attr("class", function(d){ return "Country" } )
+        .style("stroke", "rgba(51,51,51,0.2)")
         .attr("fill", function (d) {
             d.info = map.get(d.properties.name) || null;
             let selectedYearInfo = d.info ? d.info.lifeExpectancyInfoPerYear.filter(_ => _.year == selectedYear) : null;
@@ -36,6 +37,8 @@ function setupMapColorScale() {
     let colorScale = d3.scaleThreshold()
         .domain([55, 65, 75, 80])
         .range(["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"])
+        //.range(["#d7191c","#fdae61","#ffffbf","#abd9e9", "#2c7bb6"])
+        //.range(["#fdae61", "#ffffbf", "#41b6c4", "#2c7fb8", "#253494"])
         .unknown("#cccccc");
     return colorScale;
 }

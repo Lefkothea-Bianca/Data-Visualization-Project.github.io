@@ -55,11 +55,25 @@ body {
 
 .diagramComponent {   
     width: 554px;
+    min-width: 554px;
 }
 
 .rangeLabel {
   display: inline-block;
   width: 7%;
+}
+
+.play, .pause {
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.play:hover, .pause:hover {
+  color: #00796b;
+}
+
+[class^="bi-"]::before, [class*=" bi-"]::before {
+  vertical-align: middle;
 }
 
 .text-right {
@@ -102,7 +116,7 @@ input[type=range]::-webkit-slider-runnable-track {
   height: 4px;
   cursor: pointer;
   animate: 0.2s;
-  background: #03a9f4;
+  background: #00796b;
   border-radius: 25px;
 }
 
@@ -118,12 +132,12 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #03a9f4;
+  background: #00796b;
 }
 
 .range-wrap {
   position: relative;
-  width: 84%;
+  width: 78%;
   display: inline-block;
 }
 

@@ -1,5 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", setupEvents);
 var defaultLocation = "Global";
+var defaultStroke = "rgba(51,51,51,0.2)";
 var selectedCountryElement;
 
 d3.helper = {};
@@ -38,7 +39,7 @@ d3.helper.mapHelper = function(accessor){
         .on("mouseout", function(d, i){
             tooltipDiv.remove();
             if (!i.info || selectedCountry != i.info.location) {
-                d3.select(this).transition().duration(100).style("stroke", "transparent");
+                d3.select(this).transition().duration(100).style("stroke", defaultStroke);
             }
         });
     };
@@ -59,35 +60,92 @@ function sliderEvents() {
     }
 
     slider.onchange = function () {
-        redrawWorldMap();
-        if (selectedCountry != defaultLocation) {
-            d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
-            selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
-            selectedCountryElement.style("opacity", 1).style("stroke", "black");
-        }
+        onSliderChangeEvents();
+    }
+}
+
+function onSliderChangeEvents() {
+    redrawWorldMap();
+    if (selectedCountry != defaultLocation) {
+        d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
+        selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
+        selectedCountryElement.style("opacity", 1).style("stroke", "black");
     }
 }
 
 function sliderTooltipEvents() {
+    var interval;
     const
         range = document.getElementById('myRange'),
         rangeV = document.getElementById('rangeV'),
-        setValue = ()=>{
+        play = document.getElementById('play'),
+        pause = document.getElementById('pause'),
+        clipIconChange = () => {
+            if (play.style.display == "none") {
+                play.style.display = "inline-block";
+                pause.style.display = "none";
+            }
+            else {
+                play.style.display = "none";
+                pause.style.display = "inline-block";
+            }
+        },
+        selectedYearSet = () => {
+            selectedYear = yearElement.innerHTML = range.value;
+        },
+        rangeAtStart = () => {
+            if (range.value == range.max){
+                range.value = (parseInt(range.min)-1).toString();
+            }
+        },
+        rangeMoveForward = () => {
+            range.value = (parseInt(range.value)+1).toString();
+        }
+        pauseOnSliderEnd = () => {
+            if (range.value == range.max) { pauseClip() }
+        },
+        rangeTooltipShow = () => {
+            rangeV.style.display = "block";
+        },
+        rangeTooltipHide = () => {
+            rangeV.style.display = "none";
+        },
+        rangeTooltipSetValue = ()=>{
             const newValue = Number( (range.value - range.min) * 100 / (range.max - range.min) ),
                 newPosition = 10 - (newValue * 0.2);
             rangeV.innerHTML = `<span>${range.value}</span>`;
             rangeV.style.left = `calc(${newValue}% + (${newPosition}px))`;
+        },
+        playClip = ()=>{
+            clipIconChange();
+            rangeTooltipShow();
+            interval = window.setInterval(()=>{
+                rangeAtStart();
+                rangeMoveForward();
+                rangeTooltipSetValue();
+                selectedYearSet();
+                onSliderChangeEvents();
+                pauseOnSliderEnd();
+            }, 500);
+        },
+        pauseClip = ()=>{
+            clearInterval(interval);
+            clipIconChange();
+            rangeTooltipHide();
         };
-    range.addEventListener('input', setValue);
+
+    range.addEventListener('input', rangeTooltipSetValue);
     range.addEventListener("mouseover", function( event ) {
-        rangeV.style.display = "block";
+        rangeTooltipShow();
     });
     range.addEventListener("mouseout", function( event ) {
-        rangeV.style.display = "none";
+        rangeTooltipHide();
     });
+    play.addEventListener('click', playClip);
+    pause.addEventListener('click', pauseClip);
 
-    setValue();
-    rangeV.style.display = "none";
+    rangeTooltipSetValue();
+    rangeTooltipHide();
 }
 
 function mapSvgInteractionEvents() {
@@ -109,7 +167,7 @@ function onMapSvgOrLegendClick(d) {
 function resetDefaultMapState() {
     selectedCountry = defaultLocation;
     d3.selectAll(".Country").transition().duration(100).style("opacity", 1);
-    selectedCountryElement.transition().duration(100).style("stroke", "transparent");
+    selectedCountryElement.transition().duration(100).style("stroke", defaultStroke);
     selectedCountryElement = null;
 }
 
@@ -121,7 +179,7 @@ function unselectCountry() {
 function selectCountry(i, element) {
     selectedCountry = i.info.location;
     selectedCountryElement = d3.select(element);
-    d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke", "transparent");
+    d3.selectAll(".Country").transition().duration(100).style("opacity", 0.5).style("stroke", defaultStroke);
     selectedCountryElement.transition().duration(100).style("opacity", 1).style("stroke", "black");
 }
 
