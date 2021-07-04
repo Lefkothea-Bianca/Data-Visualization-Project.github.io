@@ -45,6 +45,6 @@ function setHealthyLifeExpectancyData(d) {
 
 function sortInfoMapByYear() {
     map.forEach((element) => {
-        element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) < parseInt(b.year)) ? 1 : -1)
+        element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)
     })
 }

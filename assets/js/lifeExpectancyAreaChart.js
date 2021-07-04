@@ -1,4 +1,10 @@
 var svg;
+var x;
+var dataForSelectedCountry;
+var areaChartTooltip;
+var focus;
+var focus2;
+var vertline;
 var chart = d3.select("#lifeExpectancyAreaChart");
 var keys = ["healthyLifeExpectancy","yearsLivedWithDisability"];
 
@@ -23,10 +29,10 @@ function reDrawAreaChart() {
 }
 
 function drawAreaChart(data) {
-    var dataForSelectedCountry = getDisplayData(data);
+    dataForSelectedCountry = getDisplayData(data);
 
     // Add X axis
-    var x = d3.scaleLinear()
+    x = d3.scaleLinear()
         .domain(d3.extent(dataForSelectedCountry, function(d) { return d.year; }))
         .range([ 0, areaChartWidth ]);
     svg.append("g")
@@ -93,7 +99,7 @@ function drawAreaChart(data) {
         .data(stackedData)
         .enter()
         .append("path")
-        .style("fill", function(d) { console.log(d.key) ; return color(d.key); })
+        .style("fill", function(d) { return color(d.key); })
         .attr("d", d3.area()
             .x(function(d, i) { return x(d.data.year); })
             .y0(function(d) { return y(d[0]); })
@@ -122,6 +128,59 @@ function drawAreaChart(data) {
         .attr("y", function(d,i){ return i*(size+5) + (size/2) - 50})
         .text(function(d){ return getLegend(d)})
         .attr("class", "areaLegendText")
+
+    setupTooltip();
+}
+
+function mousemove() {
+    var bisectDate = d3.bisector(function(d) {
+        return d.year;
+    }).left;
+
+    var areaChartOverlay = d3.select("#areaChartOverlay") ;
+    var marginLeft = areaChartMargin.left + 10;
+    var areaChartTooltipWidth = areaChartTooltip.node().getBoundingClientRect().width;
+
+    var x0 = x.invert(d3.pointer(event, this)[0]),
+        i = bisectDate(dataForSelectedCountry, x0, 1),
+        d0 = dataForSelectedCountry[i - 1],
+        d1 = dataForSelectedCountry[i];
+    if (d0 && d1) {
+        d= x0 - d0.year > d1.year - x0 ? d1 : d0;
+        var totalYears = parseFloat(d['healthyLifeExpectancy'])+parseFloat(d['yearsLivedWithDisability'])
+        var healthyYears = parseFloat(d['healthyLifeExpectancy']);
+        focus.attr("transform", "translate(" + x(d.year) + "," + (areaChartOverlay.attr("height") * (90-totalYears))/90 + ")");
+        focus2.attr("transform", "translate(" + x(d.year) + "," + (areaChartOverlay.attr("height") * (90-healthyYears))/90 + ")");
+
+        var absoluteMousePos = d3.pointer(event, this);
+        var xPosition = absoluteMousePos[0];
+
+        areaChartTooltip
+            .style('bottom', (areaChartOverlay.attr("height") * totalYears)/90 +'px')
+            .style('position', 'absolute')
+            .style('z-index', 1001);
+        areaChartTooltip.html(getAreaChartTooltipHtml(d));
+        if (xPosition < (areaChartOverlay.attr("width")/2)) {
+            areaChartTooltip.style('left', x(d.year) + marginLeft +'px');
+        }
+        else {
+            areaChartTooltip.style('left', x(d.year) - (areaChartTooltipWidth - areaChartMargin.left + 10) +'px');
+        }
+        vertline.attr('x1', x(d.year)).attr('x2', x(d.year))
+    }
+}
+
+function getAreaChartTooltipHtml(d) {
+    var html = "<div class='tooltipSubheader'><strong>" + d.year + "</strong></div>";
+    var healthyLifeExpectancyTitle = getLegend('healthyLifeExpectancy');
+    var yearsLivedWithDisabilityTitle = getLegend('yearsLivedWithDisability');
+    var total = Number(d['healthyLifeExpectancy']) + Number(d['yearsLivedWithDisability']);
+
+    html +="<table class='text-right'>"
+    html += "<tr><td>" + healthyLifeExpectancyTitle + ":</td><td>" + d['healthyLifeExpectancy'] + " years</td></tr>";
+    html += "<tr><td>" + yearsLivedWithDisabilityTitle + ":</td><td>" + d['yearsLivedWithDisability'] + " years</td></tr>";
+    html += "<tr class='bold'><td>Total:</td><td>" + total + " years</td></tr>";
+    return html;
 }
 
 function getLegend(d) {
@@ -132,14 +191,17 @@ function getLegend(d) {
             return "Years lived with disability";
     }
 }
+
 function make_x_gridlines(x) {
     return d3.axisBottom(x)
         .ticks(8)
 }
+
 function make_y_gridlines(y) {
     return d3.axisLeft(y)
         .ticks(9)
 }
+
 function getDisplayData(data) {
     var dataForSelectedCountry = [];
 
@@ -158,4 +220,68 @@ function getDisplayData(data) {
         })
     }
     return dataForSelectedCountry;
+}
+
+function setupTooltip() {
+    // Tooltip
+    areaChartTooltip = d3.select("#areaChartTooltip").style("opacity", 1);
+
+    //vertical line
+    vertline = svg.append('line')
+        .attr('class','vertline')
+        .attr('x1',0)
+        .attr('x2',0)
+        .attr('y1',0)
+        .attr('y2',areaChartHeight)
+        .attr('stroke','rgba(0,0,0,0.2)')
+        .attr('stroke-width',1);
+
+    focus = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+
+    focus.append("circle")
+        .attr("r", 5)
+        .style("fill","white")
+        .style("stroke",'rgba(252,141,89,1)');
+
+    focus.append("text")
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .style("font-size",15);
+
+    focus2 = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+
+    focus2.append("circle")
+        .attr("r",5)
+        .style("fill","white")
+        .style("stroke",'rgba(153,213,148,1)');
+
+    focus2.append("text")
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .style("font-size",15);
+
+    svg.append("rect")
+        .attr("id", "areaChartOverlay")
+        .attr("class", "overlay")
+        .attr("width", areaChartWidth)
+        .attr("height", areaChartHeight)
+        .on("mouseover", function() {
+            focus.style("display", null);
+            focus2.style("display", null);
+            areaChartTooltip.style("display", "block");
+            vertline.style("display", "block");
+
+        })
+        .on("mouseout", function() {
+            focus.style("display", "none");
+            focus2.style("display", "none");
+            areaChartTooltip.style("display", "none");
+            vertline.style("display", "none");
+
+        })
+        .on("mousemove", mousemove);
 }

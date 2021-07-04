@@ -3,6 +3,10 @@ body {
   font: 16px sans-serif;
   font-family: "Source Serif Pro";
 }
+
+.bold {
+  font-weight: bold;
+}
 .relative {
   position: relative;
 }
@@ -18,7 +22,7 @@ body {
 .x.axis path {
   display: none;
 }
-.customTooltip{
+.customTooltip, .areaChartTooltip{
   font-size: 14px;
   line-height: 1.5;
   padding: 10px;
@@ -753,6 +757,16 @@ p {
 .breadcrumb li:first-child::before,
 .breadcrumb li:first-child::after {
    left: 5px;
+}
+
+#areaChartTooltip {
+  left: 55px;
+  width: 250px;
+  position: absolute;
+}
+
+td, th {
+  padding: 0 4px;
 }
 
 @media (max-width: 992px) {
