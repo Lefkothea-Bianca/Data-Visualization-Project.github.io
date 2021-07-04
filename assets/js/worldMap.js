@@ -76,12 +76,18 @@ function getMapTooltipHtml(d) {
     else {
         let latestYearInfo = d.info.lifeExpectancyInfoPerYear[0];
         html += "<div class='tooltipSubheader'><strong>Life Expectancy</strong></div>";
-        html += "<div><span>Males: </span>" + latestYearInfo.lifeExpectancyMale + " years</div>";
-        html += "<div><span>Females: </span>" + latestYearInfo.lifeExpectancyFemale + " years</div>";
+        html += "<table class='text-right'>";
+        html += "<tr><td>Males:</td><td>" + latestYearInfo.lifeExpectancyMale + " years</td></tr>";
+        html += "<tr><td>Females:</td><td>" + latestYearInfo.lifeExpectancyFemale + " years</td></tr>";
+        html += "<tr class='bold'><td>Both:</td><td>" + latestYearInfo.lifeExpectancyBoth + " years</td></tr></table>";
+
         html += "<hr>";
+
         html += "<div class='tooltipSubheader'><strong>Healthy Life Expectancy</strong></div>";
-        html += "<div><span>Males: </span>" + latestYearInfo.healthyLifeExpectancyMale + " years</div>";
-        html += "<div><span>Females: </span>" + latestYearInfo.healthyLifeExpectancyFemale + " years</div>";
+        html += "<table class='text-right'>";
+        html += "<tr><td>Males:</td><td>" + latestYearInfo.healthyLifeExpectancyMale + " years</td></tr>";
+        html += "<tr><td>Females:</td><td>" + latestYearInfo.healthyLifeExpectancyFemale + " years</td></tr>";
+        html += "<tr class='bold'><td>Both:</td><td>" + latestYearInfo.healthyLifeExpectancyBoth + " years</td></tr></table>";
     }
     return html;
 }

@@ -179,7 +179,7 @@ function getAreaChartTooltipHtml(d) {
     html +="<table class='text-right'>"
     html += "<tr><td>" + healthyLifeExpectancyTitle + ":</td><td>" + d['healthyLifeExpectancy'] + " years</td></tr>";
     html += "<tr><td>" + yearsLivedWithDisabilityTitle + ":</td><td>" + d['yearsLivedWithDisability'] + " years</td></tr>";
-    html += "<tr class='bold'><td>Total:</td><td>" + total + " years</td></tr>";
+    html += "<tr class='bold'><td>Total:</td><td>" + total + " years</td></tr></table>";
     return html;
 }
 
