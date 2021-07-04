@@ -1,5 +1,6 @@
 ﻿var mapSvg = d3.select("#lifeExpectancyWorldMap");
 var mapLegendSvg;
+var zoomTransformation;
 
 function setupMap() {
     setupMapLegend();
@@ -10,6 +11,7 @@ function setupMap() {
 function redrawWorldMap() {
     mapSvg.selectAll('*').remove();
     drawWorldMap(fileData[0]);
+    mapSvg.selectAll('path').attr('transform', zoomTransformation);
 }
 
 function drawWorldMap(data) {
@@ -36,8 +38,8 @@ function drawWorldMap(data) {
     var zoom = d3.zoom()
         .scaleExtent([1, 8])
         .on('zoom', function(event, d) {
-            mapSvg.selectAll('path')
-                .attr('transform', event.transform);
+            zoomTransformation = event.transform;
+            mapSvg.selectAll('path').attr('transform', zoomTransformation);
         });
 
     mapSvg.call(zoom);
