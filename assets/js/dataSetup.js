@@ -43,6 +43,28 @@ function setHealthyLifeExpectancyData(d) {
     map.set(d.location, info);
 }
 
+function setWDIInfoPerYear(info, d) {
+    var minYear = 1990;
+    var maxYear = 2019;
+    for (var i = minYear; i <= maxYear; i++) {
+        var yearString = i.toString();
+        var infoPerYear = new WDIInfoPerYear(yearString);
+        infoPerYear.currentHealthExpenditurePerCapita = d[yearString];
+        info.wdiInfoPerYear.push(infoPerYear);
+    }
+    return infoPerYear;
+}
+
+function setWDIData(d) {
+    let info = map.get(d["Country Name"]);
+    //If we have no Life Expectancy Data, it has no point to insert WDI data
+    if (info) {
+        info.wdiInfoPerYear = new Array();
+        setWDIInfoPerYear(info, d);
+        map.set(d["Country Name"], info);
+    }
+}
+
 function sortInfoMapByYear() {
     map.forEach((element) => {
         element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)

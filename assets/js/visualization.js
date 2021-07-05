@@ -21,6 +21,12 @@ function loadData() {
         }),
         d3.csv("Healthy_Life_Expectancy_Data_Global.csv", function (d) {
             setHealthyLifeExpectancyData(d);
+        }),
+        d3.csv("WDIData.csv", function (d) {
+            // Current health expenditure per capita (current US$)
+            if (d["Indicator Code"] == "SH.XPD.CHEX.PC.CD") {
+                setWDIData(d);
+            }
         })
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
@@ -30,5 +36,6 @@ function loadData() {
         //Draw Charts
         setupMap();
         drawLifeExpectancyAreaChart(map);
+        drawLifeExpectancyLineChart(map);
     })
 }

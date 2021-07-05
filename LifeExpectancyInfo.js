@@ -1,6 +1,7 @@
 class LifeExpectancyInfo {
   location;
   lifeExpectancyInfoPerYear;
+  wdiInfoPerYear;
 }
 
 class LifeExpectancyInfoPerYear {
@@ -14,4 +15,12 @@ class LifeExpectancyInfoPerYear {
   healthyLifeExpectancyMale;
   lifeExpectancyFemale;
   healthyLifeExpectancyFemale;
+}
+
+class WDIInfoPerYear {
+  constructor(year) {
+    this.year = year;
+  }
+  year;
+  currentHealthExpenditurePerCapita;
 }

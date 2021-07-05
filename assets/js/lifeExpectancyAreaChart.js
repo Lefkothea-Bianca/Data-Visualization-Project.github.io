@@ -29,7 +29,7 @@ function reDrawAreaChart() {
 }
 
 function drawAreaChart(data) {
-    dataForSelectedCountry = getDisplayData(data);
+    dataForSelectedCountry = getDisplayDataForAreaChart(data);
 
     // Add X axis
     x = d3.scaleLinear()
@@ -202,15 +202,10 @@ function make_y_gridlines(y) {
         .ticks(9)
 }
 
-function getDisplayData(data) {
+function getDisplayDataForAreaChart(data) {
     var dataForSelectedCountry = [];
 
-    if (selectedCountry == null) {
-        data.forEach((element) => {
-            console.log(element);
-        })
-    }
-    else {
+    if (selectedCountry != null) {
         data.get(selectedCountry).lifeExpectancyInfoPerYear.forEach((element) => {
             dataForSelectedCountry.push({
                 year: element.year,
