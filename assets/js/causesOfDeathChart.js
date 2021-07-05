@@ -2,10 +2,11 @@ var treeMapSvg;
 var margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const width2 = 445 - margin.left - margin.right;
 const height2 = 445 - margin.top - margin.bottom;
+var causesOfDeathChart = d3.select("#causesOfDeathChart");
 
 function drawCausesOfDeathChart(selectedCountry, selectedYear) {
 
-    treeMapSvg = d3.select("#treemap")
+    treeMapSvg = causesOfDeathChart
         .append("svg")
         .attr("width", width2 + margin.left + margin.right)
         .attr("height", height2 + margin.top + margin.bottom)
@@ -23,10 +24,8 @@ function redrawCauseOfDeathChart(country, year) {
 
 function drawCauseOfDeathChart(country, year) {
     var map2 = [];
-    d3.json('causes-of-death-data.json',
-        function (data) {
-            map2.push(data)
-        }).then(function (data) {
+    d3.json('causes-of-death-data.json')
+        .then(function (data) {
             let tree = data[country][year];
             tree.push({ id: 294 })
 
@@ -63,9 +62,9 @@ function drawCauseOfDeathChart(country, year) {
                 })
                 .on("mousemove", function (event, d) {
                     treeMapTooltip
-                        .style('top', event.pageY - 10 + 'px')
-                        .style('left', event.pageX + 10 + 'px')
-                        treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
+                        .style('top', event.x0 - 10 + 'px')
+                        .style('left', event.y0 + 10 + 'px')
+                    treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
                     return treeMapTooltip.style("visibility", "visible");
                 })
                 .on("mouseout", function () { return treeMapTooltip.style("visibility", "hidden"); });
