@@ -53,14 +53,11 @@ function setupEvents() {
 function sliderEvents() {
     var slider = document.getElementById("myRange");
     selectedYear = slider.value;
-
-    var yearElements = document.getElementsByClassName("yearElement");
-    for (var i = 0; i < yearElements.length; i++) {
-        yearElements.item(i).innerHTML = slider.value;
-    }
+    updateYearElements(selectedYear);
 
     slider.oninput = function () {
-        selectedYear = yearElement.innerHTML = this.value;
+        selectedYear = this.value;
+        updateYearElements(selectedYear);
     }
 
     slider.onchange = function () {
@@ -68,8 +65,16 @@ function sliderEvents() {
     }
 }
 
+function updateYearElements(value) {
+    var yearElements = document.getElementsByClassName("yearElement");
+    for (var i = 0; i < yearElements.length; i++) {
+        yearElements.item(i).innerHTML = value;
+    }
+}
+
 function onSliderChangeEvents() {
     redrawWorldMap();
+    redrawCauseOfDeathChart(selectedCountry, selectedYear);
     if (selectedCountry != defaultLocation) {
         d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
         selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
@@ -95,7 +100,8 @@ function sliderTooltipEvents() {
             }
         },
         selectedYearSet = () => {
-            selectedYear = yearElement.innerHTML = range.value;
+            selectedYear = range.value;
+            pdateYearElements(selectedYear);
         },
         adjustRange = () => {
             if (range.value == range.max) {range.value = range.min;}

@@ -24,7 +24,6 @@ function redrawCauseOfDeathChart(country, year) {
 }
 
 function drawCauseOfDeathChart(country, year) {
-    var map2 = [];
     d3.json('causes-of-death-data.json')
         .then(function (data) {
             let tree = data[country][year];
@@ -67,7 +66,6 @@ function drawCauseOfDeathChart(country, year) {
                 })
                 .on("mouseout", function () { treeMapTooltip.style("display", "none"); });
 
-
             // and to add the text labels
             treeMapSvg
                 .selectAll("text")
@@ -77,7 +75,7 @@ function drawCauseOfDeathChart(country, year) {
                 .attr("x", function (d) { return d.x0 + 10 })    // +10 to adjust position (more right)
                 .attr("y", function (d) { return d.y0 + 20 })    // +20 to adjust position (lower)
                 .text(function (d) { return d.data.name })
-                .attr("font-size", "15px")
+                .attr("font-size", "12px")
                 .attr("fill", "white")
         })
 }

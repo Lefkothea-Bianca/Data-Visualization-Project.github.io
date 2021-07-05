@@ -22,7 +22,7 @@ function loadData() {
         d3.csv("Healthy_Life_Expectancy_Data_Global.csv", function (d) {
             setHealthyLifeExpectancyData(d);
         }),
-        d3.csv("WDIDataOld.csv"),
+        d3.csv("WDIData.csv"),
         d3.json("causes-of-death-data.json", function (d) {
             setCausesOfDeathData(d);
         })
