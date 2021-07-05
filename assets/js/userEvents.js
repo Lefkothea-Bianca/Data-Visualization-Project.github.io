@@ -52,8 +52,12 @@ function setupEvents() {
 
 function sliderEvents() {
     var slider = document.getElementById("myRange");
-    var yearElement = document.getElementById("yearElement");
-    selectedYear = yearElement.innerHTML = slider.value;
+    selectedYear = slider.value;
+
+    var yearElements = document.getElementsByClassName("yearElement");
+    for (var i = 0; i < yearElements.length; i++) {
+        yearElements.item(i).innerHTML = slider.value;
+    }
 
     slider.oninput = function () {
         selectedYear = yearElement.innerHTML = this.value;

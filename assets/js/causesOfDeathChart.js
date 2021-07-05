@@ -2,8 +2,8 @@ var treeMapSvg;
 var causesOfDeathChart = d3.select("#causesOfDeathChart");
 
 var treemapChartMargin = { top: 10, right: 10, bottom: 10, left: 10 };
-    width2 = +treemapChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
-    height2 = +treemapChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
+    width2 = +causesOfDeathChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
+    height2 = +causesOfDeathChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
 
 function drawCausesOfDeathChart(selectedCountry, selectedYear) {
 
@@ -42,11 +42,9 @@ function drawCauseOfDeathChart(country, year) {
                 .padding(4)
                 (root)
 
-            var treeMapTooltip = d3.select("#treemap")
-                .append("div")
-                .style("class", "treeMapTooltip")
-                .style("position", "absolute")
-                .style("visibility", "hidden");
+            var treeMapTooltip = d3.select("body").append("div")
+                .attr("class", "treemapTooltip")
+                .style("position", "absolute");
 
             treeMapSvg
                 .selectAll("rect")
@@ -59,18 +57,15 @@ function drawCauseOfDeathChart(country, year) {
                 .attr('height', function (d) { return d.y1 - d.y0; })
                 .style("stroke", "black")
                 .style("fill", "#69b3a2")
-                .on("mouseover", function (d) {
-                    treeMapTooltip.style('visibility', 'visible');
-                })
                 .on("mousemove", function (event, d) {
-                    var absoluteMousePos = d3.pointer(event, this);
-                    treeMapTooltip
-                        .style('left', (absoluteMousePos[0])+'px')
-                        .style('top', (absoluteMousePos[1])+'px')
-                        treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
-                    return treeMapTooltip.style("visibility", "visible");
+                    var bodyNode = d3.select('body').node();
+                    var absoluteMousePos = d3.pointer(event, bodyNode);
+                    treeMapTooltip.style("left", (absoluteMousePos[0] + 10)+'px')
+                    treeMapTooltip.style("top", (absoluteMousePos[1] + 10)+'px')
+                    treeMapTooltip.style("display", "inline-block");
+                    treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
                 })
-                .on("mouseout", function () { return treeMapTooltip.style("visibility", "hidden"); });
+                .on("mouseout", function () { treeMapTooltip.style("display", "none"); });
 
 
             // and to add the text labels
@@ -87,16 +82,13 @@ function drawCauseOfDeathChart(country, year) {
         })
 }
 
-// Read data
-
-
 function getTreeMapTooltipHtml(d) {
     var html = "<div class='tooltipHeader'><strong>" + d.name + "</strong></div>";
-    html += "<div class='tooltipSubheader'><strong>" + d.name + "</strong>: " + d.sum + "</div>";
-
+    html += "<table class='text-right'>";
     for (let index = 0; index < d.children.length; index++) {
         const element = d.children[index];
-        if (element.sum) html += "<div class='tooltipSubheader'><strong>" + element.name + "</strong>: " + element.sum + "</div>";
+        if (element.sum) html += "<tr><td>"+element.name+": </td><td>" + element.sum + "%</td></tr>";
     }
+    html +="<tr class='bold'><td>Total: </td><td>" + d.sum + "%</td></tr></table>";
     return html;
 }
