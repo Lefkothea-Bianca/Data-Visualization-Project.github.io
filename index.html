@@ -1,12 +1,16 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Data Visualization</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap" rel="stylesheet">
 
     <link href="assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -21,6 +25,7 @@
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bumbeishvili/d3-tip-for-v6@4/d3-tip.min.css">
 </head>
+
 <body>
     <header id="header" class="fixed-top d-flex align-items-center">
         <div class="container d-flex align-items-center justify-content-between">
@@ -36,13 +41,15 @@
         </div>
     </header>
     <div id="visualize">
-        <div class="container"><h3>World's Life Expectancy</h3></div>
-        <div class="container margin-top-20">                          
+        <div class="container">
+            <h3>World's Life Expectancy</h3>
+        </div>
+        <div class="container margin-top-20">
             <div class="parent">
                 <div class="child diagramComponent">
                     <div id="worldMap" class="diagramWrapper relative">
                         <div class="chartLegend">
-                            <div class="diagramHeader">Life Expectancy</div>              
+                            <div class="diagramHeader">Life Expectancy</div>
                             <div class="diagramSubheader" id="yearElement">2019</div>
                         </div>
                         <svg id="lifeExpectancyWorldMap" width="540" height="350"></svg>
@@ -58,10 +65,18 @@
                         <svg id="lifeExpectancyAreaChart" width="540" height="350"></svg>
                     </div>
                 </div>
+                <div class="child diagramComponent">
+                    <div id="treemap">
+
+                    </div>
+                </div>
+                <div class="child diagramComponent">
+
+                </div>
             </div>
         </div>
         <div class="container">
-            <div class="parent">      
+            <div class="parent">
                 <div class="child diagramComponent">
                     <div class="slidecontainer diagramElementWrapper">
                         <i id="play" class="bi bi-play play"></i>
@@ -69,12 +84,12 @@
                         <span class="rangeLabel">1990</span>
                         <div class="range-wrap">
                             <div class="range-value" id="rangeV"></div>
-                            <input type="range" class="range slider" min="1990" max="2019" value="2019" id="myRange">                          
-                        </div>               
+                            <input type="range" class="range slider" min="1990" max="2019" value="2019" id="myRange">
+                        </div>
                         <span class="rangeLabel text-right">2019</span>
                     </div>
                 </div>
-            </div>    
+            </div>
         </div>
         <div class="container margin-top-20">
             <div class="parent">
@@ -104,7 +119,8 @@
             </div>
         </div>
     </div>
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
     <script src="assets/library/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/library/typed.js/typed.min.js"></script>
     <script src="assets/js/main.js"></script>
@@ -115,5 +131,7 @@
     <script src="LifeExpectancyInfo.js"></script>
     <script src="assets/js/visualization.js"></script>
     <script src="assets/js/userEvents.js"></script>
+    <script src="assets/js/causesOfDeathChart.js"></script>
 </body>
+
 </html>

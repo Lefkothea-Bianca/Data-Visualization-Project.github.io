@@ -182,4 +182,5 @@ function applyCountrySelectionChangeToCharts() {
     var countryElement = document.getElementById("countryElement");
     countryElement.innerHTML = selectedCountry == defaultLocation ? "The World" : selectedCountry;
     reDrawAreaChart();
+    redrawCauseOfDeathChart(selectedCountry, selectedYear);
 }
