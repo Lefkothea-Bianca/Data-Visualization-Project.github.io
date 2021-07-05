@@ -179,8 +179,11 @@ function selectCountry(i, element) {
 }
 
 function applyCountrySelectionChangeToCharts() {
-    var countryElement = document.getElementById("countryElement");
-    countryElement.innerHTML = selectedCountry == defaultLocation ? "The World" : selectedCountry;
+    var countryElements = document.getElementsByClassName("countryElement");
+    var innerHtml = selectedCountry == defaultLocation ? "The World" : selectedCountry;
+    for (var i = 0; i < countryElements.length; i++) {
+        countryElements.item(i).innerHTML = innerHtml;
+    }
     reDrawAreaChart();
     redrawCauseOfDeathChart(selectedCountry, selectedYear);
 }

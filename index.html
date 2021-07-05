@@ -59,19 +59,11 @@
                     <div id="areaChart" class="diagramWrapper relative">
                         <div class="chartLegend">
                             <div class="diagramHeader">Healthy life expectancy and years lived with disability</div>
-                            <div class="diagramSubheader" id="countryElement">The World</div>
+                            <div class="diagramSubheader"><span class="countryElement">The World</span></div>
                         </div>
                         <div id="areaChartTooltip" class="areaChartTooltip" style="display: none"></div>
                         <svg id="lifeExpectancyAreaChart" width="540" height="350"></svg>
                     </div>
-                </div>
-                <div class="child diagramComponent">
-                    <div id="treemap">
-
-                    </div>
-                </div>
-                <div class="child diagramComponent">
-
                 </div>
             </div>
         </div>
@@ -91,13 +83,22 @@
                 </div>
             </div>
         </div>
-        <div class="container margin-top-20">
+        <div class="container">
             <div class="parent">
+                <div class="child diagramComponent">
+                    <div id="treeMapChart" class="diagramWrapper relative">
+                        <div class="chartLegend">
+                            <div class="diagramHeader">Causes of Death</div>
+                            <div class="diagramSubheader"><span class="countryElement"></span></div>
+                        </div>
+                        <div id="treemap" width="540" height="350"></div>
+                    </div>
+                </div>
                 <div class="child diagramComponent">
                     <div id="lineChart" class="diagramWrapper relative">
                         <div class="chartLegend">
-                            <div class="diagramHeader">Life expectancy vs. healthcare expenditure, 1990 to 2018</div>
-                            <div class="diagramSubheader"></div>
+                            <div class="diagramHeader">Life expectancy vs. healthcare expenditure</div>
+                            <div class="diagramSubheader">1990 to 2018</div>
                         </div>
                         <div id="lineChartTooltip" class="areaChartTooltip" style="display: none"></div>
                         <svg id="lifeExpectancyLineChart" width="540" height="350"></svg>

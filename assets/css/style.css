@@ -22,7 +22,7 @@ body {
 .x.axis path {
   display: none;
 }
-.customTooltip, .areaChartTooltip{
+.customTooltip, .areaChartTooltip, .treeMapTooltip{
   font-size: 14px;
   line-height: 1.5;
   padding: 10px;
@@ -46,6 +46,7 @@ body {
     background-color: #e9ecef82;
     padding: 8px;    
     color: #41464b;
+    min-height: 55px;
 }
 
 .diagramHeader {

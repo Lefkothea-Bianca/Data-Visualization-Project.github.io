@@ -1,17 +1,18 @@
 var treeMapSvg;
-var margin = { top: 10, right: 10, bottom: 10, left: 10 };
-const width2 = 445 - margin.left - margin.right;
-const height2 = 445 - margin.top - margin.bottom;
+var treemapChart = d3.select("#treemap");
+
+var treemapChartMargin = { top: 10, right: 10, bottom: 10, left: 10 };
+    width2 = +treemapChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
+    height2 = +treemapChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
 
 function drawCausesOfDeathChart(selectedCountry, selectedYear) {
-
     treeMapSvg = d3.select("#treemap")
         .append("svg")
-        .attr("width", width2 + margin.left + margin.right)
-        .attr("height", height2 + margin.top + margin.bottom)
+        .attr("width", width2 + treemapChartMargin.left + treemapChartMargin.right)
+        .attr("height", height2 + treemapChartMargin.top + treemapChartMargin.bottom)
         .append("g")
         .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+            "translate(" + treemapChartMargin.left + "," + treemapChartMargin.top + ")");
 
     drawCauseOfDeathChart(selectedCountry, selectedYear);
 }
@@ -44,6 +45,7 @@ function drawCauseOfDeathChart(country, year) {
 
             var treeMapTooltip = d3.select("#treemap")
                 .append("div")
+                .style("class", "treeMapTooltip")
                 .style("position", "absolute")
                 .style("visibility", "hidden");
 
@@ -62,9 +64,10 @@ function drawCauseOfDeathChart(country, year) {
                     treeMapTooltip.style('visibility', 'visible');
                 })
                 .on("mousemove", function (event, d) {
+                    var absoluteMousePos = d3.pointer(event, this);
                     treeMapTooltip
-                        .style('top', event.pageY - 10 + 'px')
-                        .style('left', event.pageX + 10 + 'px')
+                        .style('left', (absoluteMousePos[0])+'px')
+                        .style('top', (absoluteMousePos[1])+'px')
                         treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
                     return treeMapTooltip.style("visibility", "visible");
                 })
