@@ -3,6 +3,8 @@
     if (!info) {
         info = new LifeExpectancyInfo();
         info.location = data.location;
+    }
+    if (!info.lifeExpectancyInfoPerYear)  {
         info.lifeExpectancyInfoPerYear = new Array();
     }
     return info;
@@ -52,14 +54,14 @@ function setWDIInfoPerYear(info, d) {
         infoPerYear.currentHealthExpenditurePerCapita = d[yearString];
         info.wdiInfoPerYear.push(infoPerYear);
     }
-    return infoPerYear;
 }
 
 function setWDIData(d) {
     let info = map.get(d["Country Name"]);
-    //If we have no Life Expectancy Data, it has no point to insert WDI data
     if (info) {
-        info.wdiInfoPerYear = new Array();
+        if (!info.wdiInfoPerYear)  {
+            info.wdiInfoPerYear = new Array();
+        }
         setWDIInfoPerYear(info, d);
         map.set(d["Country Name"], info);
     }
@@ -67,6 +69,11 @@ function setWDIData(d) {
 
 function sortInfoMapByYear() {
     map.forEach((element) => {
-        element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)
+        if (element.lifeExpectancyInfoPerYear) {
+            element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)
+        }
+        if (element.wdiInfoPerYear) {
+            element.wdiInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)
+        }
     })
 }

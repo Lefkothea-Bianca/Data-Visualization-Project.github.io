@@ -83,8 +83,8 @@ function drawLineChart(data) {
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
             return d3.line()
-                .x(function(d) { return x(d.expenditure); })
-                .y(function(d) { return y(+d.lifeExpectancy); })
+                .x(function(d) { return d.expenditure && d.lifeExpectancy ? x(d.expenditure) : 0; })
+                .y(function(d) { return d.expenditure && d.lifeExpectancy ? y(+d.lifeExpectancy) : 0; })
                 (d.values)
         })
 }

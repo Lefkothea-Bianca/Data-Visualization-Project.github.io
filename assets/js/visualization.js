@@ -22,14 +22,15 @@ function loadData() {
         d3.csv("Healthy_Life_Expectancy_Data_Global.csv", function (d) {
             setHealthyLifeExpectancyData(d);
         }),
-        d3.csv("WDIData.csv", function (d) {
-            // Current health expenditure per capita (current US$)
-            if (d["Indicator Code"] == "SH.XPD.CHEX.PC.CD") {
-                setWDIData(d);
-            }
-        })
+        d3.csv("WDIDataOld.csv")
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
+        fileData[5].forEach((element) => {
+            if (element["Indicator Code"] == "SH.XPD.CHEX.PC.CD") {
+                setWDIData(element);
+            }
+        });
+
         mapColorScale = setupMapColorScale();
         sortInfoMapByYear();
 
