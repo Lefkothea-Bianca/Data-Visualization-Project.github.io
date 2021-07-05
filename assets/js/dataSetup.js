@@ -65,6 +65,10 @@ function setWDIData(d) {
     }
 }
 
+function setCausesOfDeathData(d) {
+    //TODO
+}
+
 function sortInfoMapByYear() {
     map.forEach((element) => {
         element.lifeExpectancyInfoPerYear.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1)

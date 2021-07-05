@@ -27,6 +27,9 @@ function loadData() {
             if (d["Indicator Code"] == "SH.XPD.CHEX.PC.CD") {
                 setWDIData(d);
             }
+        }),
+        d3.json("causes-of-death-data.json", function (d) {
+            setCausesOfDeathData(d);
         })
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
@@ -37,5 +40,6 @@ function loadData() {
         setupMap();
         drawLifeExpectancyAreaChart(map);
         drawLifeExpectancyLineChart(map);
+        drawCausesOfDeathChart(selectedCountry, selectedYear)
     })
 }
