@@ -1,12 +1,13 @@
 var treeMapSvg;
-var treemapChart = d3.select("#treemap");
+var causesOfDeathChart = d3.select("#causesOfDeathChart");
 
 var treemapChartMargin = { top: 10, right: 10, bottom: 10, left: 10 };
     width2 = +treemapChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
     height2 = +treemapChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
 
 function drawCausesOfDeathChart(selectedCountry, selectedYear) {
-    treeMapSvg = d3.select("#treemap")
+
+    treeMapSvg = causesOfDeathChart
         .append("svg")
         .attr("width", width2 + treemapChartMargin.left + treemapChartMargin.right)
         .attr("height", height2 + treemapChartMargin.top + treemapChartMargin.bottom)
@@ -24,10 +25,8 @@ function redrawCauseOfDeathChart(country, year) {
 
 function drawCauseOfDeathChart(country, year) {
     var map2 = [];
-    d3.json('causes-of-death-data.json',
-        function (data) {
-            map2.push(data)
-        }).then(function (data) {
+    d3.json('causes-of-death-data.json')
+        .then(function (data) {
             let tree = data[country][year];
             tree.push({ id: 294 })
 
