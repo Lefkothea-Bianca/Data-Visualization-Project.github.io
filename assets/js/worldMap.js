@@ -25,7 +25,7 @@ function styleSelectedCountryOnMap() {
 
 function drawWorldMap(data) {
     var width = +mapSvg.attr("width"), height = +mapSvg.attr("height");
-    const projection = d3.geoMercator().scale(90).center([0, 20]).translate([width / 2, height / 2]);
+    const projection = d3.geoMercator().scale(80).center([0, 20]).translate([width / 2, height / 2]);
 
     mapSvg.append("g").selectAll("path")
         .data(data.features)
