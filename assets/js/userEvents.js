@@ -4,19 +4,19 @@ var defaultStrokeWidth = 0.2;
 var selectedCountryElement;
 
 d3.helper = {};
-d3.helper.mapHelper = function(accessor){
-    return function(selection){
+d3.helper.mapHelper = function (accessor) {
+    return function (selection) {
         var tooltipDiv;
         var bodyNode = d3.select('body').node();
 
-        selection.on("mouseover", function(d, i){
+        selection.on("mouseover", function (d, i) {
             d3.select('body').selectAll('div.customTooltip').remove();
             tooltipDiv = d3.select('body').append('div').attr('class', 'customTooltip');
 
             var absoluteMousePos = d3.pointer(event, bodyNode);
             tooltipDiv
-                .style('left', (absoluteMousePos[0])+'px')
-                .style('top', (absoluteMousePos[1])+'px')
+                .style('left', (absoluteMousePos[0]) + 'px')
+                .style('top', (absoluteMousePos[1]) + 'px')
                 .style('position', 'absolute')
                 .style('z-index', 1001);
 
@@ -24,24 +24,33 @@ d3.helper.mapHelper = function(accessor){
             tooltipDiv.html(tooltipText);
             d3.select(this).transition().duration(100).style("stroke", "black").style("stroke-width", 1);
         })
-        .on('mousemove', function(d, i) {
-            var absoluteMousePos = d3.pointer(event, bodyNode);
-            tooltipDiv
-                .style('left', (absoluteMousePos[0] + 10)+'px')
-                .style('top', (absoluteMousePos[1] - 15)+'px');
-            var tooltipText = accessor(d, i) || '';
-            tooltipDiv.html(tooltipText);
-        })
-        .on("click", function(d, i){
-            selectedCountry == i.info.location ? unselectCountry() : selectCountry(i, this);
-            applyCountrySelectionChangeToCharts();
-        })
-        .on("mouseout", function(d, i){
-            tooltipDiv.remove();
-            if (!i.info || selectedCountry != i.info.location) {
-                d3.select(this).transition().duration(100).style("stroke-width", defaultStrokeWidth);
-            }
-        });
+            .on('mousemove', function (d, i) {
+                var absoluteMousePos = d3.pointer(event, bodyNode);
+                tooltipDiv
+                    .style('left', (absoluteMousePos[0] + 10) + 'px')
+                    .style('top', (absoluteMousePos[1] - 15) + 'px');
+                var tooltipText = accessor(d, i) || '';
+                tooltipDiv.html(tooltipText);
+            })
+            .on("click", function (d, i) {
+                try {
+                    selectedCountry == i.info.location ? unselectCountry() : selectCountry(i, this);
+                    applyCountrySelectionChangeToCharts();
+                }
+                catch (error) {
+                    console.error(`error on map click. error: ${error}`)
+                }
+            })
+            .on("mouseout", function (d, i) {
+                try {
+                    tooltipDiv.remove();
+                    if (!i.info || selectedCountry != i.info.location) {
+                        d3.select(this).transition().duration(100).style("stroke-width", defaultStrokeWidth);
+                    }
+                } catch (error) {
+                    console.error(`error on map mouseout. error: ${error}`)
+                }
+            });
     };
 };
 
@@ -99,8 +108,8 @@ function sliderTooltipEvents() {
             updateYearElements(selectedYear);
         },
         adjustRange = () => {
-            if (range.value == range.max) {range.value = range.min;}
-            else { range.value = (parseInt(range.value)+1).toString(); }
+            if (range.value == range.max) { range.value = range.min; }
+            else { range.value = (parseInt(range.value) + 1).toString(); }
         },
         pauseOnSliderEnd = () => {
             if (range.value == range.max) { pauseClip() }
@@ -111,16 +120,16 @@ function sliderTooltipEvents() {
         rangeTooltipHide = () => {
             rangeV.style.display = "none";
         },
-        rangeTooltipSetValue = ()=>{
-            const newValue = Number( (range.value - range.min) * 100 / (range.max - range.min) ),
+        rangeTooltipSetValue = () => {
+            const newValue = Number((range.value - range.min) * 100 / (range.max - range.min)),
                 newPosition = 10 - (newValue * 0.2);
             rangeV.innerHTML = `<span>${range.value}</span>`;
             rangeV.style.left = `calc(${newValue}% + (${newPosition}px))`;
         },
-        playClip = ()=>{
+        playClip = () => {
             clipIconChange();
             rangeTooltipShow();
-            interval = window.setInterval(()=>{
+            interval = window.setInterval(() => {
                 adjustRange();
                 rangeTooltipSetValue();
                 selectedYearSet();
@@ -128,17 +137,17 @@ function sliderTooltipEvents() {
                 pauseOnSliderEnd();
             }, 500);
         },
-        pauseClip = ()=>{
+        pauseClip = () => {
             clearInterval(interval);
             clipIconChange();
             rangeTooltipHide();
         };
 
     range.addEventListener('input', rangeTooltipSetValue);
-    range.addEventListener("mouseover", function( event ) {
+    range.addEventListener("mouseover", function (event) {
         rangeTooltipShow();
     });
-    range.addEventListener("mouseout", function( event ) {
+    range.addEventListener("mouseout", function (event) {
         rangeTooltipHide();
     });
     play.addEventListener('click', playClip);
@@ -149,10 +158,10 @@ function sliderTooltipEvents() {
 }
 
 function mapSvgInteractionEvents() {
-    mapSvg.on("click", function(d){
+    mapSvg.on("click", function (d) {
         onMapSvgOrLegendClick(d);
     })
-    mapLegendSvg.on("click", function(d){
+    mapLegendSvg.on("click", function (d) {
         onMapSvgOrLegendClick(d);
     })
 }
