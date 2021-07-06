@@ -37,7 +37,7 @@ body {
   position: absolute;
   right: 0;
   font-size: 13px;
-  padding: 5px 35px;
+  padding: 5px 8px;
 }
 
 .lineChartTable td {
@@ -112,6 +112,13 @@ body {
 .diagramElementWrapper {
   margin: 0 5px;
   border: 2px solid transparent;
+}
+
+.factorButton {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  font-size: 12px;
 }
 
 .legend {
