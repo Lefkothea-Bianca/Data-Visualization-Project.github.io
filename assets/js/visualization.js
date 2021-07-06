@@ -27,13 +27,11 @@ function loadData() {
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
         fileData[5].forEach((element) => {
-            if (element["Indicator Code"] == "SH.XPD.CHEX.PC.CD") {
-                setWDIData(element);
-            }
+            setWDIData(element);
         });
 
         setCausesOfDeathData(fileData[6]);
-    
+
 
         mapColorScale = setupMapColorScale();
         sortInfoMapByYear();
