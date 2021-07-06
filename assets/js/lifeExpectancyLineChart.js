@@ -72,10 +72,41 @@ function drawLineChart(data) {
             .tickFormat("")
         )
 
+    //arrow
+    lineChartSvg.append("svg:defs")
+        .append("svg:marker")
+        .attr("id", "triangle")
+        .attr("refX", 2)
+        .attr("refY", 2)
+        .attr("markerWidth", 10)
+        .attr("markerHeight", 10)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("orient", "auto")
+        .append("path")
+        .attr("class", "trianglePath")
+        .attr("d", "M 0 0 4 2 0 4 1 2")
+        .style("fill", "steelblue");
+
+    //arrow
+    lineChartSvg.append("svg:defs")
+        .append("svg:marker")
+        .attr("id", "triangleSelected")
+        .attr("refX", 6)
+        .attr("refY", 6)
+        .attr("markerWidth", 30)
+        .attr("markerHeight", 30)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M 0 0 12 6 0 12 3 6")
+        .style("fill", "steelblue");
+
+    //line
     lineChartSvg.selectAll(".line")
         .data(displayData)
         .enter()
         .append("path")
+        .attr("marker-end", "url(#triangle)")
         .attr("class", "linePath")
         .attr("fill", "none")
         .attr("stroke", function(d){ return "steelblue" })
@@ -87,16 +118,17 @@ function drawLineChart(data) {
                 (d.values)
         })
         .on("mouseover", function(d){
-            d3.selectAll(".linePath").style("stroke", "gray");
+            d3.selectAll(".linePath").style("stroke", "rgba(128,128,128,0.5)");
+            d3.selectAll(".trianglePath").style("fill", "rgba(128,128,128,0.5)");
+
             var target = event.currentTarget;
-            var html = lineChartTooltipHtml(target.__data__);
-            d3.select(".lineChartTooltip").style("display", "block").html(html);
-            d3.select(target)
-                .style("stroke", "steelblue")
-                .attr("stroke-width", 4);
+            d3.select(".lineChartTooltip").style("display", "block").html(lineChartTooltipHtml(target.__data__));
+            d3.select(target).style("stroke", "steelblue").attr("stroke-width", 4);
+            d3.select(target).attr("marker-end", "url(#triangleSelected)");
         })
         .on("mouseout", function(d){
             d3.selectAll(".linePath").style("stroke", "steelblue").attr("stroke-width", 0.5);
+            d3.selectAll(".linePath").attr("marker-end", "url(#triangle)");
             //d3.select(".lineChartTooltip").style("display", "none");
         });
 }
