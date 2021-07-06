@@ -75,11 +75,6 @@ function updateYearElements(value) {
 function onSliderChangeEvents() {
     redrawWorldMap();
     redrawCauseOfDeathChart(selectedCountry, selectedYear);
-    if (selectedCountry != defaultLocation) {
-        d3.selectAll(".Country").style("opacity", 0.5).style("stroke", "transparent");
-        selectedCountryElement = d3.select(Array.from(d3.selectAll(".Country")._groups[0]).filter(_=>_.__data__.properties.name == selectedCountry)[0]);
-        selectedCountryElement.style("opacity", 1).style("stroke-width", 1);
-    }
 }
 
 function sliderTooltipEvents() {
@@ -193,6 +188,8 @@ function applyCountrySelectionChangeToCharts() {
     for (var i = 0; i < countryElements.length; i++) {
         countryElements.item(i).innerHTML = getSelectedCountryDisplayLabel();
     }
+    redrawWorldMap();
     reDrawAreaChart();
     redrawCauseOfDeathChart(selectedCountry, selectedYear);
+    reDrawLineChart();
 }

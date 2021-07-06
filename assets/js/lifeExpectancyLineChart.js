@@ -1,5 +1,6 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
+var xLineChart, yLineChart;
 
 var lineChartMargin = {top: 80, right: 40, bottom: 55, left: 55},
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
@@ -17,27 +18,27 @@ function drawLifeExpectancyLineChart(data) {
 }
 
 function reDrawLineChart() {
-    lineChartSvg.selectAll('*').remove();
-    drawLineChart(map);
+    resetAllToMinOpacity();
+    styleTarget(getSelectedLine(), xLineChart, yLineChart);
 }
 
 function drawLineChart(data) {
     var displayData = getDisplayDataForLineChart(data);
 
     // Add X axis
-    var x = d3.scaleLinear()
+    xLineChart = d3.scaleLinear()
         .domain([0, 10000])
         .range([ 0, lineChartWidth ]);
     lineChartSvg.append("g")
         .attr("transform", "translate(0," + lineChartHeight + ")")
-        .call(d3.axisBottom(x).ticks(5));
+        .call(d3.axisBottom(xLineChart).ticks(5));
 
     // Add Y axis
-    var y = d3.scaleLinear()
+    yLineChart = d3.scaleLinear()
         .domain([45, 85])
         .range([ lineChartHeight, 0 ]);
     lineChartSvg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(yLineChart));
 
     // Add X axis label:
     lineChartSvg.append("text")
@@ -59,7 +60,7 @@ function drawLineChart(data) {
         .attr("class","grid")
         .attr("transform","translate(0," + lineChartHeight + ")")
         .style("stroke-dasharray",("3,3"))
-        .call(make_x_gridlines(x)
+        .call(make_x_gridlines(xLineChart)
             .tickSize(-lineChartHeight)
             .tickFormat("")
         )
@@ -67,7 +68,7 @@ function drawLineChart(data) {
     lineChartSvg.append("g")
         .attr("class","grid")
         .style("stroke-dasharray",("3,3"))
-        .call(make_y_gridlines(y)
+        .call(make_y_gridlines(yLineChart)
             .tickSize(-lineChartWidth)
             .tickFormat("")
         )
@@ -87,7 +88,7 @@ function drawLineChart(data) {
         .attr("d", "M 0 0 4 2 0 4 1 2")
         .style("fill", "steelblue");
 
-    //arrow
+    //arrow for selected line
     lineChartSvg.append("svg:defs")
         .append("svg:marker")
         .attr("id", "triangleSelected")
@@ -116,35 +117,36 @@ function drawLineChart(data) {
         .attr("marker-end", "url(#triangle)")
         .attr("class", "linePath")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return "steelblue" })
+        .attr("stroke", function(d){ return "rgba(128,128,128,0.5)" })
         .attr("stroke-width", 0.5)
         .attr("d", function(d){
             return d3.line()
-                .x(function(d) { return d.expenditure && d.lifeExpectancy ? x(d.expenditure) : 0; })
-                .y(function(d) { return d.expenditure && d.lifeExpectancy ? y(+d.lifeExpectancy) : 0; })
+                .x(function(d) { return d.expenditure && d.lifeExpectancy ? xLineChart(d.expenditure) : 0; })
+                .y(function(d) { return d.expenditure && d.lifeExpectancy ? yLineChart(+d.lifeExpectancy) : 0; })
                 (d.values)
         })
         .on("click", function(d) {
             var target = event.currentTarget;
             var targetData = target.__data__;
             selectedCountry = targetData.key;
+            applyCountrySelectionChangeToCharts();
         })
         .on("mouseover", function(d){
             resetAllToMinOpacity();
 
             //Style Target
-            styleTarget(event.currentTarget, x, y);
+            styleTarget(event.currentTarget, xLineChart, yLineChart);
         })
         .on("mouseout", function(d){
             resetAllToMinOpacity();
-            styleTarget(getSelectedLine(), x, y);
+            styleTarget(getSelectedLine());
         });
 }
 
-function styleTarget(target, x, y) {
+function styleTarget(target) {
     var targetData = target.__data__;
     styleTargetLine(d3.select(target));
-    styleTargetLineText(targetData, x, y);
+    styleTargetLineText(targetData);
     styleTooltip(targetData);
 }
 
@@ -153,11 +155,11 @@ function styleTargetLine(target) {
     target.attr("marker-end", "url(#triangleSelected)");
 }
 
-function styleTargetLineText(targetData, x, y) {
+function styleTargetLineText(targetData) {
     d3.select(".lineText")
         .style("display", "block")
         .text(targetData.key)
-        .attr("transform", "translate(" + x(targetData.values[1].expenditure)+ "," + y(targetData.values[1].lifeExpectancy + 2) + ")");
+        .attr("transform", "translate(" + xLineChart(targetData.values[1].expenditure)+ "," + yLineChart(targetData.values[1].lifeExpectancy + 2) + ")");
 }
 
 function styleTooltip(targetData) {
