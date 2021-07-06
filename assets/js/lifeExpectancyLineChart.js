@@ -1,7 +1,8 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
-var group;
+var allGroup = [{ name: "Healthcare Expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
+var group = "expenditure";
 
 var lineChartMargin = { top: 90, right: 40, bottom: 55, left: 55 },
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
@@ -14,8 +15,6 @@ function drawLifeExpectancyLineChart(data) {
         .attr("height", lineChartHeight + lineChartMargin.top + lineChartMargin.bottom)
         .append("g")
         .attr("transform", "translate(" + lineChartMargin.left + "," + lineChartMargin.top + ")");
-
-    var allGroup = [{ name: "Healthcare Expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
 
     d3.select("#selectButton")
         .selectAll('myOptions')
@@ -40,6 +39,7 @@ function reDrawLineChart() {
 
 function update(selectedGroup) {
     group = selectedGroup;
+    resetLineChartHeader();
     reDrawAreaChartOnSelectGroupChanged();
 }
 
@@ -71,7 +71,7 @@ function drawLineChart(data) {
         .attr("text-anchor", "end")
         .attr("x", lineChartWidth)
         .attr("y", lineChartHeight + 40)
-        .text("Healthcare expenditure per capita (current US$)");
+        .text(getLineChartXLabel());
 
     // Add Y axis label:
     lineChartSvg.append("text")
@@ -210,7 +210,7 @@ function getSelectedLine() {
 function lineChartTooltipHtml(d) {
     var html = "<table class='text-right lineChartTable'>";
     html += "<tr><th></th><th class='text-center'>2000</th><th class='text-center'>2018</th></tr>";
-    html += "<tr><th>Health expenditure per capita:</th><td>" + d.values[0].expenditure + " (US$)</td><td>" + d.values[1].expenditure + " (US$)</td></tr>";
+    html += "<tr><th>"+getLineChartTableDataFactorLabel()+":</th><td>" + d.values[0].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td><td>" + d.values[1].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td></tr>";
     html += "<tr><th>Life expectancy:</th><td>" + d.values[0].lifeExpectancy + " years</td><td>" + d.values[1].lifeExpectancy + " years</td></tr></table>";
     return html;
 }
@@ -256,3 +256,37 @@ function getDisplayDataForLineChart(data) {
     })
     return dataToDisplay;
 }
+
+function getLineChartXLabel() {
+    switch(group) {
+        case "expenditure": return "Healthcare expenditure per capita (current US$)";
+        case "gdp": return "GDP per capita, PPP (current international $)";
+    }
+}
+
+function getLineChartTableDataFactorLabel() {
+    switch(group) {
+        case "expenditure": return "Health expenditure per capita";
+        case "gdp": return "GDP per capita (PPP)";
+    }
+}
+
+function getLineChartTableDataFactorMetricLabel() {
+    switch(group) {
+        case "expenditure": return "(US$)";
+        case "gdp": return "($)";
+    }
+}
+
+function resetLineChartHeader() {
+    var factor = document.getElementById("selectedFactor");
+    factor.innerHTML = getLineChartFactorForHeader();
+}
+
+function getLineChartFactorForHeader() {
+    switch(group) {
+        case "expenditure": return "healthcare expenditure";
+        case "gdp": return "GDP";
+    }
+}
+
