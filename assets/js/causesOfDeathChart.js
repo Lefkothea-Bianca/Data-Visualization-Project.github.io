@@ -115,9 +115,9 @@ function getTreeMapTooltipHtml(d) {
     html += "<table class='text-right'>";
     for (let index = 0; index < d.children.length; index++) {
         const element = d.children[index];
-        if (element.sum) html += "<tr><td>" + element.name + ": </td><td>" + element.total + " deaths (" + (element.sum * 100).toFixed(2) + " %)</td></tr>";
+        if (element.sum) html += "<tr><td>" + element.name + ": </td><td>" + formatNumber(element.total) + " deaths</td><td>(" + (element.sum * 100).toFixed(2) + " %)</td></tr>";
     }
-    html += "<tr class='bold'><td>Total: </td><td>" + d.total + " deaths</td><td>"+(d.sum * 100).toFixed(2) + " %)</td></tr></table>";
+    html += "<tr class='bold'><td>Total: </td><td>" + formatNumber(d.total) + " deaths</td><td>(" + (d.sum * 100).toFixed(2) + " %)</td></tr></table>";
     return html;
 }
 
