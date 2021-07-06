@@ -23,9 +23,7 @@ function loadData() {
             setHealthyLifeExpectancyData(d);
         }),
         d3.csv("WDIData.csv"),
-        d3.json("causes-of-death-data.json", function (d) {
-            setCausesOfDeathData(d);
-        })
+        d3.json("causes-of-death-data.json")
     ]).then(function (loadedFileData) {
         fileData = loadedFileData;
         fileData[5].forEach((element) => {
@@ -33,6 +31,9 @@ function loadData() {
                 setWDIData(element);
             }
         });
+
+        setCausesOfDeathData(fileData[6]);
+    
 
         mapColorScale = setupMapColorScale();
         sortInfoMapByYear();

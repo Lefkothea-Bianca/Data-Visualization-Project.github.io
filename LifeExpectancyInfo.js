@@ -2,6 +2,7 @@ class LifeExpectancyInfo {
   location;
   lifeExpectancyInfoPerYear;
   wdiInfoPerYear;
+  causesOfDeathPerYear;
 }
 
 class LifeExpectancyInfoPerYear {
@@ -23,4 +24,12 @@ class WDIInfoPerYear {
   }
   year;
   currentHealthExpenditurePerCapita;
+}
+
+class CausesOfDeathPerYear {
+  constructor(year) {
+    this.year = year;
+  }
+  year;
+  causesOfDeath;
 }
