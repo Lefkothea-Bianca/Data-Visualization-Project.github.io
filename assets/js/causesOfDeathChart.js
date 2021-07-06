@@ -30,7 +30,7 @@ function redrawCauseOfDeathChart() {
 function drawCauseOfDeathChart(d) {
 
     let tree = getDisplayDataForTreemapChart(d).slice()
-    tree.push({ id: 294 })
+    tree.push({ id: 294, name: "No data available" })
 
     var root = d3.stratify()
         .id(function (d) { return d.id; })
@@ -56,12 +56,14 @@ function drawCauseOfDeathChart(d) {
         .style("stroke", "black")
         .style("fill", "#69b3a2")
         .on("mousemove", function (event, d) {
-            var bodyNode = d3.select('body').node();
-            var absoluteMousePos = d3.pointer(event, bodyNode);
-            treeMapTooltip.style("left", (absoluteMousePos[0] + 10) + 'px')
-            treeMapTooltip.style("top", (absoluteMousePos[1] + 10) + 'px')
-            treeMapTooltip.style("display", "inline-block");
-            treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
+            if (d.data && d.data.children) {
+                var bodyNode = d3.select('body').node();
+                var absoluteMousePos = d3.pointer(event, bodyNode);
+                treeMapTooltip.style("left", (absoluteMousePos[0] + 10) + 'px')
+                treeMapTooltip.style("top", (absoluteMousePos[1] + 10) + 'px')
+                treeMapTooltip.style("display", "inline-block");
+                treeMapTooltip.html(getTreeMapTooltipHtml(d.data));
+            }
         })
         .on("mouseout", function () { treeMapTooltip.style("display", "none"); });
 
@@ -96,7 +98,7 @@ function getDisplayDataForTreemapChart(data) {
     }
 }
 function getTreeMapTooltipHtml(d) {
-    if (!d.children) return "<div class='tooltipHeader'><strong>No data available</strong></div>"
+    if (!d.children) return ""
     var html = "<div class='tooltipHeader'><strong>" + d.name + "</strong></div>";
     html += "<table class='text-right'>";
     for (let index = 0; index < d.children.length; index++) {
