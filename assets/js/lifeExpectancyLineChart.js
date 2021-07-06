@@ -53,7 +53,7 @@ function drawLineChart(data) {
 
     // Add X axis
     xLineChart = d3.scaleLinear()
-        .domain([0, 11000])
+        .domain([0, getLineChartDomain(displayData)])
         .range([0, lineChartWidth]);
     lineChartSvg.append("g")
         .attr("transform", "translate(0," + lineChartHeight + ")")
@@ -288,5 +288,9 @@ function getLineChartFactorForHeader() {
         case "expenditure": return "healthcare expenditure";
         case "gdp": return "GDP";
     }
+}
+
+function getLineChartDomain(data) {
+    return  d3.max(data.map(_=>d3.max([_.values[0].expenditure,_.values[1].expenditure])));
 }
 
