@@ -101,7 +101,7 @@ function sliderTooltipEvents() {
         },
         selectedYearSet = () => {
             selectedYear = range.value;
-            pdateYearElements(selectedYear);
+            updateYearElements(selectedYear);
         },
         adjustRange = () => {
             if (range.value == range.max) {range.value = range.min;}

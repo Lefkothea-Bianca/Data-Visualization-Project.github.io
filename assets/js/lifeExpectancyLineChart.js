@@ -178,7 +178,7 @@ function getSelectedLine() {
 
 function lineChartTooltipHtml(d) {
     var html = "<table class='text-right lineChartTable'>";
-    html += "<tr><th></th><th>2000</th><th>2018</th></tr>";
+    html += "<tr><th></th><th class='text-center'>2000</th><th class='text-center'>2018</th></tr>";
     html += "<tr><th>Health expenditure per capita:</th><td>"+d.values[0].expenditure+" (US$)</td><td>"+d.values[1].expenditure+" (US$)</td></tr>";
     html += "<tr><th>Life expectancy:</th><td>"+d.values[0].lifeExpectancy+" years</td><td>"+d.values[1].lifeExpectancy+" years</td></tr></table>";
     return html;

@@ -42,6 +42,7 @@ body {
 
 .lineChartTable td {
   border: 1px solid #ccc;
+  min-width: 65px;
 }
 
 .tooltipHeader {
