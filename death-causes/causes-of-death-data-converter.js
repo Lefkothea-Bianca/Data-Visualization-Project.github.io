@@ -539,10 +539,10 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 var map = {};
-fs.createReadStream('Causes_Of_Death.csv')
+fs.createReadStream('IHME-GBD_2019_DATA-d2fc17ee-1.csv')
     .pipe(csv())
     .on('data', (row) => {
-        if(row.age_id !== "27" || row.sex_id !== "3") return;
+        if (row.age_id !== "22" || row.sex_id !== "3") return;
         if (map[row.location_name]) {
             var countrySummary = map[row.location_name];
             if (countrySummary[row.year]) {
@@ -550,13 +550,13 @@ fs.createReadStream('Causes_Of_Death.csv')
                 updateCausesData(yearSummary, row);
             }
             else {
-                let arrData = JSON.parse(JSON.stringify(causesOfDeathHierarchies)); 
+                let arrData = JSON.parse(JSON.stringify(causesOfDeathHierarchies));
                 updateCausesData(arrData, row);
                 countrySummary[row.year] = arrData;
             }
         }
         else {
-            let arrData = JSON.parse(JSON.stringify(causesOfDeathHierarchies)); 
+            let arrData = JSON.parse(JSON.stringify(causesOfDeathHierarchies));
             updateCausesData(arrData, row);
             map[row.location_name] = {}
             map[row.location_name][row.year] = arrData;
@@ -582,11 +582,23 @@ function updateCausesData(hierarchyData, row) {
             || x.children.map(y => y.childrenIds).flat().includes(rowId))[0]
     if (element == null) { console.log("error"); return; }
     if (!element.sum) element.sum = 0;
-    element.sum += parseFloat(row.val);
+    if (!element.total) element.total = 0;
+
+    if (row.metric_id === "1") {
+        element.total += parseInt(row.val);
+    } else if (row.metric_id === "2") {
+        element.sum += parseFloat(row.val);
+    }
     if (element.id !== rowId) {
         let childElement = element.children.filter(x => x.id === rowId || x.childrenIds.includes(rowId))[0];
         if (!childElement.sum) childElement.sum = 0;
-        childElement.sum += parseFloat(row.val);
+        if (!childElement.total) childElement.total = 0;
+
+        if (row.metric_id === "1") {
+            childElement.total += parseInt(row.val);
+        } else if (row.metric_id === "2") {
+            childElement.sum += parseFloat(row.val);
+        }
     }
 }
 
