@@ -1,6 +1,6 @@
 var treeMapSvg;
 var causesOfDeathChart = d3.select("#causesOfDeathChart");
-
+var treeMapTooltip;
 var treemapChartMargin = { top: 30, right: 30, bottom: 30, left: 30 };
 width2 = +causesOfDeathChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
     height2 = +causesOfDeathChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
@@ -16,6 +16,10 @@ function drawCausesOfDeathChart() {
             "translate(" + treemapChartMargin.left + "," + treemapChartMargin.top + ")");
 
     drawCauseOfDeathChart(map);
+    treeMapTooltip = d3.select("body").append("div")
+        .attr("class", "treemapTooltip")
+        .style("position", "absolute");
+
 }
 
 function redrawCauseOfDeathChart() {
@@ -25,7 +29,7 @@ function redrawCauseOfDeathChart() {
 
 function drawCauseOfDeathChart(d) {
 
-    let tree = getDisplayDataForTreemapChart(d)
+    let tree = getDisplayDataForTreemapChart(d).slice()
     tree.push({ id: 294 })
 
     var root = d3.stratify()
@@ -39,10 +43,6 @@ function drawCauseOfDeathChart(d) {
         .size([width2, height2])
         .padding(4)
         (root)
-
-    var treeMapTooltip = d3.select("body").append("div")
-        .attr("class", "treemapTooltip")
-        .style("position", "absolute");
 
     treeMapSvg
         .selectAll("rect")
