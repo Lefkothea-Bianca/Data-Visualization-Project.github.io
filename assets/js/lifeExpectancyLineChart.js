@@ -27,7 +27,7 @@ function drawLineChart(data) {
 
     // Add X axis
     xLineChart = d3.scaleLinear()
-        .domain([0, 10000])
+        .domain([0, 11000])
         .range([ 0, lineChartWidth ]);
     lineChartSvg.append("g")
         .attr("transform", "translate(0," + lineChartHeight + ")")
