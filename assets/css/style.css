@@ -32,6 +32,12 @@ body {
   font-weight: 300;
 }
 
+.lineChartTooltip {
+  float: right;
+  position: absolute;
+  right: 0;
+}
+
 .tooltipHeader {
   font-size: 22px;
   margin-bottom: 10px;

@@ -1,6 +1,4 @@
 var lineChartSvg;
-var dataForSelectedCountry;
-var lineChartTooltip;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 
 var lineChartMargin = {top: 60, right: 30, bottom: 55, left: 55},
@@ -78,27 +76,37 @@ function drawLineChart(data) {
         .data(displayData)
         .enter()
         .append("path")
+        .attr("class", "linePath")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return "rgba(224, 224, 224, 1)" })
-        .attr("stroke-width", 1.5)
+        .attr("stroke", function(d){ return "steelblue" })
+        .attr("stroke-width", 0.5)
         .attr("d", function(d){
             return d3.line()
                 .x(function(d) { return d.expenditure && d.lifeExpectancy ? x(d.expenditure) : 0; })
                 .y(function(d) { return d.expenditure && d.lifeExpectancy ? y(+d.lifeExpectancy) : 0; })
                 (d.values)
         })
+        .on("mouseover", function(d){
+            d3.selectAll(".linePath").style("stroke", "gray");
+            var target = event.currentTarget;
+            var html = lineChartTooltipHtml(target.__data__);
+            d3.select(".lineChartTooltip").style("display", "block").html(html);
+            d3.select(target)
+                .style("stroke", "steelblue")
+                .attr("stroke-width", 3);
+        })
+        .on("mouseout", function(d){
+            d3.selectAll(".linePath").style("stroke", "steelblue").attr("stroke-width", 0.5);
+            d3.select(".lineChartTooltip").style("display", "none");
+        });
 }
 
-function getAreaChartTooltipHtml(d) {
-    var html = "<div class='tooltipSubheader'><strong>" + d.year + "</strong></div>";
-    var healthyLifeExpectancyTitle = getLegend('healthyLifeExpectancy');
-    var yearsLivedWithDisabilityTitle = getLegend('yearsLivedWithDisability');
-    var total = Number(d['healthyLifeExpectancy']) + Number(d['yearsLivedWithDisability']);
-
-    html +="<table class='text-right'>"
-    html += "<tr><td>" + healthyLifeExpectancyTitle + ":</td><td>" + d['healthyLifeExpectancy'] + " years</td></tr>";
-    html += "<tr><td>" + yearsLivedWithDisabilityTitle + ":</td><td>" + d['yearsLivedWithDisability'] + " years</td></tr>";
-    html += "<tr class='bold'><td>Total:</td><td>" + total + " years</td></tr></table>";
+function lineChartTooltipHtml(d) {
+    var html = "<div class='tooltipSubheader'><strong>" + d.key + "</strong></div>";
+    html += "<table class='text-right'>";
+    html += "<tr><th></th><th>2000</th><th>2018</th></tr>";
+    html += "<tr><th>Health Expenditure:</th><td>"+d.values[0].expenditure+"</td><td>"+d.values[1].expenditure+"</td></tr>";
+    html += "<tr><th>Life Expectancy:</th><td>"+d.values[0].lifeExpectancy+"</td><td>"+d.values[1].lifeExpectancy+"</td></tr></table>";
     return html;
 }
 
@@ -115,92 +123,32 @@ function make_y_gridlines(y) {
 function getDisplayDataForLineChart(data) {
 
     var dataToDisplay = [];
-        var minYear = 2000;
-        var maxYear = 2018;
+    var minYear = 2000;
+    var maxYear = 2018;
 
-        data.forEach((element) => {
-            if (element.lifeExpectancyInfoPerYear
-                && element.lifeExpectancyInfoPerYear.length > 0
-                && element.wdiInfoPerYear
-                && element.wdiInfoPerYear.length > 0) {
-            var values = [];
+    data.forEach((element) => {
+        if (element.lifeExpectancyInfoPerYear
+            && element.lifeExpectancyInfoPerYear.length > 0
+            && element.wdiInfoPerYear
+            && element.wdiInfoPerYear.length > 0)
+        {
             var infoWDIMinYear = element.wdiInfoPerYear.filter(_=>_.year == minYear.toString())[0];
             var infoWDIMaxYear = element.wdiInfoPerYear.filter(_=>_.year == maxYear.toString())[0];
+            var minYearExpenditureParsed = parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
+            var maxYearExpenditureParsed = parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
+            if (!isNaN(minYearExpenditureParsed) && !isNaN(maxYearExpenditureParsed)) {
+                var values = [];
+                var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == minYear.toString())[0];
+                var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == maxYear.toString())[0];
 
-            var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == minYear.toString())[0];
-            var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == maxYear.toString())[0];
-
-            values.push({year: minYear.toString(), expenditure: parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita), lifeExpectancy: infoLEMinYear.lifeExpectancyBoth});
-            values.push({year: maxYear.toString(), expenditure: parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita), lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth})
-            dataToDisplay.push({
-                key: element.location,
-                values: values
-            });
+                values.push({year: minYear.toString(), expenditure: minYearExpenditureParsed, lifeExpectancy: infoLEMinYear.lifeExpectancyBoth});
+                values.push({year: maxYear.toString(), expenditure: maxYearExpenditureParsed, lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth})
+                dataToDisplay.push({
+                    key: element.location,
+                    values: values
+                });
+            }
         }
     })
     return dataToDisplay;
-}
-
-function setupTooltip() {
-    // Tooltip
-    areaChartTooltip = d3.select("#areaChartTooltip").style("opacity", 1);
-
-    //vertical line
-    vertline = svg.append('line')
-        .attr('class','vertline')
-        .attr('x1',0)
-        .attr('x2',0)
-        .attr('y1',0)
-        .attr('y2',areaChartHeight)
-        .attr('stroke','rgba(0,0,0,0.2)')
-        .attr('stroke-width',1);
-
-    focus = svg.append("g")
-        .attr("class", "focus")
-        .style("display", "none");
-
-    focus.append("circle")
-        .attr("r", 5)
-        .style("fill","white")
-        .style("stroke",'rgba(252,141,89,1)');
-
-    focus.append("text")
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .style("font-size",15);
-
-    focus2 = svg.append("g")
-        .attr("class", "focus")
-        .style("display", "none");
-
-    focus2.append("circle")
-        .attr("r",5)
-        .style("fill","white")
-        .style("stroke",'rgba(153,213,148,1)');
-
-    focus2.append("text")
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .style("font-size",15);
-
-    svg.append("rect")
-        .attr("id", "areaChartOverlay")
-        .attr("class", "overlay")
-        .attr("width", areaChartWidth)
-        .attr("height", areaChartHeight)
-        .on("mouseover", function() {
-            focus.style("display", null);
-            focus2.style("display", null);
-            areaChartTooltip.style("display", "block");
-            vertline.style("display", "block");
-
-        })
-        .on("mouseout", function() {
-            focus.style("display", "none");
-            focus2.style("display", "none");
-            areaChartTooltip.style("display", "none");
-            vertline.style("display", "none");
-
-        })
-        .on("mousemove", mousemove);
 }
