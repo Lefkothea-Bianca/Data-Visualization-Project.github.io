@@ -19,7 +19,7 @@ function drawLifeExpectancyLineChart(data) {
 
 function reDrawLineChart() {
     resetAllToMinOpacity();
-    styleTarget(getSelectedLine(), xLineChart, yLineChart);
+    styleTarget(getSelectedLine());
 }
 
 function drawLineChart(data) {
@@ -135,7 +135,7 @@ function drawLineChart(data) {
             resetAllToMinOpacity();
 
             //Style Target
-            styleTarget(event.currentTarget, xLineChart, yLineChart);
+            styleTarget(event.currentTarget);
         })
         .on("mouseout", function(d){
             resetAllToMinOpacity();

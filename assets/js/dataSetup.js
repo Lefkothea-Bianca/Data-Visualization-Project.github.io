@@ -65,6 +65,9 @@ function setWDIData(d) {
         setWDIInfoPerYear(info, d);
         map.set(d["Country Name"], info);
     }
+    else {
+        console.log();
+    }
 }
 
 function setCausesOfDeathData(causesOfDeathData) {
