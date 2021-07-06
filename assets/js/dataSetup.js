@@ -50,10 +50,22 @@ function setWDIInfoPerYear(info, d) {
     var maxYear = 2019;
     for (var i = minYear; i <= maxYear; i++) {
         var yearString = i.toString();
-        var infoPerYear = new WDIInfoPerYear(yearString);
-        infoPerYear.currentHealthExpenditurePerCapita = d[yearString];
+        var infoPerYear = getOrCreateWDIInfoPerYear(info, yearString);
+        switch (d["Indicator Code"]) {
+            case "SH.XPD.CHEX.PC.CD": infoPerYear.currentHealthExpenditurePerCapita = d[yearString]; break;
+            case "NY.GDP.PCAP.PP.CD": infoPerYear.gdpPerCapita = d[yearString]; break;
+            case "SE.XPD.CTOT.ZS": infoPerYear.educationExpenditure = d[yearString]; break;
+        }
         info.wdiInfoPerYear.push(infoPerYear);
     }
+}
+
+function getOrCreateWDIInfoPerYear(info, yearString) {
+    let infoPerYear = info.wdiInfoPerYear.filter(x => x.year === yearString)[0];
+    if (!infoPerYear) {
+        infoPerYear = new WDIInfoPerYear(yearString);
+    }
+    return infoPerYear;
 }
 
 function setWDIData(d) {

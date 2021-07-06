@@ -1,8 +1,9 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
+var group;
 
-var lineChartMargin = {top: 90, right: 40, bottom: 55, left: 55},
+var lineChartMargin = { top: 90, right: 40, bottom: 55, left: 55 },
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
     lineChartHeight = +lineChart.attr("height") - lineChartMargin.top - lineChartMargin.bottom;
 
@@ -14,6 +15,21 @@ function drawLifeExpectancyLineChart(data) {
         .append("g")
         .attr("transform", "translate(" + lineChartMargin.left + "," + lineChartMargin.top + ")");
 
+    var allGroup = [{ name: "Healthcare Expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
+
+    d3.select("#selectButton")
+        .selectAll('myOptions')
+        .data(allGroup)
+        .enter()
+        .append('option')
+        .text(function (d) { return d.name; }) // text showed in the menu
+        .attr("value", function (d) { return d.value; })
+
+    d3.select("#selectButton").on("change", function (d) {
+        var selectedOption = d3.select(this).property("value")
+        update(selectedOption)
+    })
+
     drawLineChart(data);
 }
 
@@ -22,13 +38,23 @@ function reDrawLineChart() {
     styleTarget(getSelectedLine());
 }
 
+function update(selectedGroup) {
+    group = selectedGroup;
+    reDrawAreaChartOnSelectGroupChanged();
+}
+
+function reDrawAreaChartOnSelectGroupChanged() {
+    lineChartSvg.selectAll('*').remove();
+    drawLineChart(map);
+}
+
 function drawLineChart(data) {
     var displayData = getDisplayDataForLineChart(data);
 
     // Add X axis
     xLineChart = d3.scaleLinear()
         .domain([0, 11000])
-        .range([ 0, lineChartWidth ]);
+        .range([0, lineChartWidth]);
     lineChartSvg.append("g")
         .attr("transform", "translate(0," + lineChartHeight + ")")
         .call(d3.axisBottom(xLineChart).ticks(5));
@@ -36,7 +62,7 @@ function drawLineChart(data) {
     // Add Y axis
     yLineChart = d3.scaleLinear()
         .domain([45, 85])
-        .range([ lineChartHeight, 0 ]);
+        .range([lineChartHeight, 0]);
     lineChartSvg.append("g")
         .call(d3.axisLeft(yLineChart));
 
@@ -44,30 +70,30 @@ function drawLineChart(data) {
     lineChartSvg.append("text")
         .attr("text-anchor", "end")
         .attr("x", lineChartWidth)
-        .attr("y", lineChartHeight+40 )
+        .attr("y", lineChartHeight + 40)
         .text("Healthcare expenditure per capita (current US$)");
 
     // Add Y axis label:
     lineChartSvg.append("text")
         .attr("text-anchor", "end")
         .attr("x", 0)
-        .attr("y", -20 )
+        .attr("y", -20)
         .text("Life expectancy")
         .attr("text-anchor", "start")
 
     // Add Grid Lines
     lineChartSvg.append("g")
-        .attr("class","grid")
-        .attr("transform","translate(0," + lineChartHeight + ")")
-        .style("stroke-dasharray",("3,3"))
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + lineChartHeight + ")")
+        .style("stroke-dasharray", ("3,3"))
         .call(make_x_gridlines(xLineChart)
             .tickSize(-lineChartHeight)
             .tickFormat("")
         )
 
     lineChartSvg.append("g")
-        .attr("class","grid")
-        .style("stroke-dasharray",("3,3"))
+        .attr("class", "grid")
+        .style("stroke-dasharray", ("3,3"))
         .call(make_y_gridlines(yLineChart)
             .tickSize(-lineChartWidth)
             .tickFormat("")
@@ -81,7 +107,7 @@ function drawLineChart(data) {
         .attr("refY", 2)
         .attr("markerWidth", 10)
         .attr("markerHeight", 10)
-        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerUnits", "userSpaceOnUse")
         .attr("orient", "auto")
         .append("path")
         .attr("class", "trianglePath")
@@ -96,7 +122,7 @@ function drawLineChart(data) {
         .attr("refY", 6)
         .attr("markerWidth", 30)
         .attr("markerHeight", 30)
-        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerUnits", "userSpaceOnUse")
         .attr("orient", "auto")
         .append("path")
         .attr("d", "M 0 0 12 6 0 12 3 6")
@@ -104,7 +130,7 @@ function drawLineChart(data) {
 
     //linetext
     lineChartSvg.append("text")
-        .attr("class","lineText bold")
+        .attr("class", "lineText bold")
         .attr("dy", ".35em")
         .attr("text-anchor", "start")
         .style("fill", "steelblue");
@@ -117,31 +143,31 @@ function drawLineChart(data) {
         .attr("marker-end", "url(#triangle)")
         .attr("class", "linePath")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return "rgba(128,128,128,0.5)" })
+        .attr("stroke", function (d) { return "rgba(128,128,128,0.5)" })
         .attr("stroke-width", 0.5)
-        .attr("d", function(d){
+        .attr("d", function (d) {
             return d3.line()
-                .x(function(d) { return d.expenditure && d.lifeExpectancy ? xLineChart(d.expenditure) : 0; })
-                .y(function(d) { return d.expenditure && d.lifeExpectancy ? yLineChart(+d.lifeExpectancy) : 0; })
+                .x(function (d) { return d.expenditure && d.lifeExpectancy ? xLineChart(d.expenditure) : 0; })
+                .y(function (d) { return d.expenditure && d.lifeExpectancy ? yLineChart(+d.lifeExpectancy) : 0; })
                 (d.values)
         })
-        .on("click", function(d) {
+        .on("click", function (d) {
             var target = event.currentTarget;
             var targetData = target.__data__;
             selectedCountry = targetData.key;
             applyCountrySelectionChangeToCharts();
         })
-        .on("mouseover", function(d){
+        .on("mouseover", function (d) {
             resetAllToMinOpacity();
 
             //Style Target
             styleTarget(event.currentTarget);
         })
-        .on("mouseout", function(d){
+        .on("mouseout", function (d) {
             resetAllToMinOpacity();
             styleTarget(getSelectedLine());
         });
-        styleTarget(getSelectedLine());
+    styleTarget(getSelectedLine());
 }
 
 function styleTarget(target) {
@@ -162,7 +188,7 @@ function styleTargetLineText(targetData) {
     d3.select(".lineText")
         .style("display", "block")
         .text(targetData.key)
-        .attr("transform", "translate(" + xLineChart(targetData.values[1].expenditure)+ "," + yLineChart(targetData.values[1].lifeExpectancy + 2) + ")");
+        .attr("transform", "translate(" + xLineChart(targetData.values[1].expenditure) + "," + yLineChart(targetData.values[1].lifeExpectancy + 2) + ")");
 }
 
 function styleTooltip(targetData) {
@@ -178,14 +204,14 @@ function resetAllToMinOpacity() {
 }
 
 function getSelectedLine() {
-   return Array.from(d3.selectAll(".linePath")._groups[0]).filter(_=>_.__data__.key == selectedCountry)[0];
+    return Array.from(d3.selectAll(".linePath")._groups[0]).filter(_ => _.__data__.key == selectedCountry)[0];
 }
 
 function lineChartTooltipHtml(d) {
     var html = "<table class='text-right lineChartTable'>";
     html += "<tr><th></th><th class='text-center'>2000</th><th class='text-center'>2018</th></tr>";
-    html += "<tr><th>Health expenditure per capita:</th><td>"+d.values[0].expenditure+" (US$)</td><td>"+d.values[1].expenditure+" (US$)</td></tr>";
-    html += "<tr><th>Life expectancy:</th><td>"+d.values[0].lifeExpectancy+" years</td><td>"+d.values[1].lifeExpectancy+" years</td></tr></table>";
+    html += "<tr><th>Health expenditure per capita:</th><td>" + d.values[0].expenditure + " (US$)</td><td>" + d.values[1].expenditure + " (US$)</td></tr>";
+    html += "<tr><th>Life expectancy:</th><td>" + d.values[0].lifeExpectancy + " years</td><td>" + d.values[1].lifeExpectancy + " years</td></tr></table>";
     return html;
 }
 
@@ -209,19 +235,18 @@ function getDisplayDataForLineChart(data) {
         if (element.lifeExpectancyInfoPerYear
             && element.lifeExpectancyInfoPerYear.length > 0
             && element.wdiInfoPerYear
-            && element.wdiInfoPerYear.length > 0)
-        {
-            var infoWDIMinYear = element.wdiInfoPerYear.filter(_=>_.year == minYear.toString())[0];
-            var infoWDIMaxYear = element.wdiInfoPerYear.filter(_=>_.year == maxYear.toString())[0];
-            var minYearExpenditureParsed = parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
-            var maxYearExpenditureParsed = parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
-            if (!isNaN(minYearExpenditureParsed) && !isNaN(maxYearExpenditureParsed)) {
+            && element.wdiInfoPerYear.length > 0) {
+            var infoWDIMinYear = element.wdiInfoPerYear.filter(_ => _.year == minYear.toString())[0];
+            var infoWDIMaxYear = element.wdiInfoPerYear.filter(_ => _.year == maxYear.toString())[0];
+            var minValueParsed = group === "gdp" ? parseInt(infoWDIMinYear.gdpPerCapita) : parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
+            var maxValueParsed = group === "gdp" ? parseInt(infoWDIMaxYear.gdpPerCapita) : parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
+            if (!isNaN(minValueParsed) && !isNaN(maxValueParsed)) {
                 var values = [];
-                var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == minYear.toString())[0];
-                var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_=>_.year == maxYear.toString())[0];
+                var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == minYear.toString())[0];
+                var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == maxYear.toString())[0];
 
-                values.push({year: minYear.toString(), expenditure: minYearExpenditureParsed, lifeExpectancy: infoLEMinYear.lifeExpectancyBoth});
-                values.push({year: maxYear.toString(), expenditure: maxYearExpenditureParsed, lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth})
+                values.push({ year: minYear.toString(), expenditure: minValueParsed, lifeExpectancy: infoLEMinYear.lifeExpectancyBoth });
+                values.push({ year: maxYear.toString(), expenditure: maxValueParsed, lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth })
                 dataToDisplay.push({
                     key: element.location,
                     values: values
