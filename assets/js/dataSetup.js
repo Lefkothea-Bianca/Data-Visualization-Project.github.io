@@ -4,7 +4,7 @@
         info = new LifeExpectancyInfo();
         info.location = data.location;
     }
-    if (!info.lifeExpectancyInfoPerYear)  {
+    if (!info.lifeExpectancyInfoPerYear) {
         info.lifeExpectancyInfoPerYear = new Array();
     }
     return info;
@@ -59,7 +59,7 @@ function setWDIInfoPerYear(info, d) {
 function setWDIData(d) {
     let info = map.get(d["Country Name"]);
     if (info) {
-        if (!info.wdiInfoPerYear)  {
+        if (!info.wdiInfoPerYear) {
             info.wdiInfoPerYear = new Array();
         }
         setWDIInfoPerYear(info, d);
@@ -67,8 +67,25 @@ function setWDIData(d) {
     }
 }
 
-function setCausesOfDeathData(d) {
-    //TODO
+function setCausesOfDeathData(causesOfDeathData) {
+    let countryKeys = Object.keys(causesOfDeathData);
+    for (let countryKeysIndex = 0; countryKeysIndex < countryKeys.length; countryKeysIndex++) {
+        let countryKey = countryKeys[countryKeysIndex];
+        let info = map.get(countryKey);
+        if (!info) continue;
+        const countryData = causesOfDeathData[countryKey];
+        let yearKeys = Object.keys(countryData);
+        for (let yearIndex = 0; yearIndex < yearKeys.length; yearIndex++) {
+            let yearKey = yearKeys[yearIndex];
+            const causesOfDeathPerCountryAndYear = countryData[yearKey];
+            if (!info.causesOfDeathPerYear) {
+                info.causesOfDeathPerYear = new Array()
+            }
+            let causesOfDeathPerYear = new CausesOfDeathPerYear(yearKey);
+            causesOfDeathPerYear.causesOfDeath = causesOfDeathPerCountryAndYear;
+            info.causesOfDeathPerYear.push(causesOfDeathPerYear);
+        }
+    }
 }
 
 function sortInfoMapByYear() {
