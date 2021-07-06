@@ -1,7 +1,7 @@
 var treeMapSvg;
 var causesOfDeathChart = d3.select("#causesOfDeathChart");
 
-var treemapChartMargin = { top: 10, right: 10, bottom: 10, left: 10 };
+var treemapChartMargin = { top: 30, right: 30, bottom: 30, left: 30 };
     width2 = +causesOfDeathChart.attr("width") - treemapChartMargin.left - treemapChartMargin.right,
     height2 = +causesOfDeathChart.attr("height") - treemapChartMargin.top - treemapChartMargin.bottom;
 

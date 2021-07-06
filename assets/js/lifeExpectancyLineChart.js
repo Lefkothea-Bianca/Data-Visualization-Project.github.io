@@ -1,7 +1,7 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 
-var lineChartMargin = {top: 60, right: 30, bottom: 55, left: 55},
+var lineChartMargin = {top: 80, right: 40, bottom: 55, left: 55},
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
     lineChartHeight = +lineChart.attr("height") - lineChartMargin.top - lineChartMargin.bottom;
 
@@ -16,7 +16,7 @@ function drawLifeExpectancyLineChart(data) {
     drawLineChart(data);
 }
 
-function reDrawAreaChart() {
+function reDrawLineChart() {
     lineChartSvg.selectAll('*').remove();
     drawLineChart(map);
 }
@@ -27,14 +27,14 @@ function drawLineChart(data) {
     // Add X axis
     var x = d3.scaleLinear()
         .domain([0, 10000])
-        .range([ 0, areaChartWidth ]);
+        .range([ 0, lineChartWidth ]);
     lineChartSvg.append("g")
-        .attr("transform", "translate(0," + areaChartHeight + ")")
+        .attr("transform", "translate(0," + lineChartHeight + ")")
         .call(d3.axisBottom(x).ticks(5));
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([40, 90])
+        .domain([45, 85])
         .range([ lineChartHeight, 0 ]);
     lineChartSvg.append("g")
         .call(d3.axisLeft(y));
@@ -68,7 +68,7 @@ function drawLineChart(data) {
         .attr("class","grid")
         .style("stroke-dasharray",("3,3"))
         .call(make_y_gridlines(y)
-            .tickSize(-areaChartWidth)
+            .tickSize(-lineChartWidth)
             .tickFormat("")
         )
 
@@ -93,20 +93,20 @@ function drawLineChart(data) {
             d3.select(".lineChartTooltip").style("display", "block").html(html);
             d3.select(target)
                 .style("stroke", "steelblue")
-                .attr("stroke-width", 3);
+                .attr("stroke-width", 4);
         })
         .on("mouseout", function(d){
             d3.selectAll(".linePath").style("stroke", "steelblue").attr("stroke-width", 0.5);
-            d3.select(".lineChartTooltip").style("display", "none");
+            //d3.select(".lineChartTooltip").style("display", "none");
         });
 }
 
 function lineChartTooltipHtml(d) {
-    var html = "<div class='tooltipSubheader'><strong>" + d.key + "</strong></div>";
+    var html = "<div class='lineChartTooltipHeader'><strong>" + d.key + "</strong></div>";
     html += "<table class='text-right'>";
     html += "<tr><th></th><th>2000</th><th>2018</th></tr>";
-    html += "<tr><th>Health Expenditure:</th><td>"+d.values[0].expenditure+"</td><td>"+d.values[1].expenditure+"</td></tr>";
-    html += "<tr><th>Life Expectancy:</th><td>"+d.values[0].lifeExpectancy+"</td><td>"+d.values[1].lifeExpectancy+"</td></tr></table>";
+    html += "<tr><th>Health Expenditure (US$):</th><td>"+d.values[0].expenditure+"</td><td>"+d.values[1].expenditure+"</td></tr>";
+    html += "<tr><th>Life Expectancy (years):</th><td>"+d.values[0].lifeExpectancy+"</td><td>"+d.values[1].lifeExpectancy+"</td></tr></table>";
     return html;
 }
 

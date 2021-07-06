@@ -8,7 +8,7 @@ var vertline;
 var chart = d3.select("#lifeExpectancyAreaChart");
 var keys = ["healthyLifeExpectancy","yearsLivedWithDisability"];
 
-var areaChartMargin = {top: 60, right: 30, bottom: 55, left: 55},
+var areaChartMargin = {top: 60, right: 40, bottom: 55, left: 55},
     areaChartWidth = +chart.attr("width") - areaChartMargin.left - areaChartMargin.right,
     areaChartHeight = +chart.attr("height") - areaChartMargin.top - areaChartMargin.bottom;
 
