@@ -190,9 +190,8 @@ function selectCountry(i, element) {
 
 function applyCountrySelectionChangeToCharts() {
     var countryElements = document.getElementsByClassName("countryElement");
-    var innerHtml = selectedCountry == defaultLocation ? "The World" : selectedCountry;
     for (var i = 0; i < countryElements.length; i++) {
-        countryElements.item(i).innerHTML = innerHtml;
+        countryElements.item(i).innerHTML = getSelectedCountryDisplayLabel();
     }
     reDrawAreaChart();
     redrawCauseOfDeathChart(selectedCountry, selectedYear);

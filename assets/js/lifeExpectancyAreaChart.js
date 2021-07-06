@@ -171,7 +171,7 @@ function mousemove() {
 }
 
 function getAreaChartTooltipHtml(d) {
-    var html = "<div class='tooltipSubheader'><strong>" + d.year + "</strong></div>";
+    var html = "<div class='tooltipSubheader'><strong>" + getSelectedCountryDisplayLabel() + ", " +d.year + "</strong></div>";
     var healthyLifeExpectancyTitle = getLegend('healthyLifeExpectancy');
     var yearsLivedWithDisabilityTitle = getLegend('yearsLivedWithDisability');
     var total = Number(d['healthyLifeExpectancy']) + Number(d['yearsLivedWithDisability']);

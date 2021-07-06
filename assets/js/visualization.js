@@ -2,7 +2,7 @@
 let map = new Map();
 let mapColorScale;
 let selectedYear;
-let selectedCountry = "Greece";
+let selectedCountry = "Global";
 
 //Load Data Files
 loadData();
