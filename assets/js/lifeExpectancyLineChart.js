@@ -144,10 +144,12 @@ function drawLineChart(data) {
 }
 
 function styleTarget(target) {
-    var targetData = target.__data__;
-    styleTargetLine(d3.select(target));
-    styleTargetLineText(targetData);
-    styleTooltip(targetData);
+    if (target) {
+        var targetData = target.__data__;
+        styleTargetLine(d3.select(target));
+        styleTargetLineText(targetData);
+        styleTooltip(targetData);
+    }
 }
 
 function styleTargetLine(target) {
