@@ -95,8 +95,6 @@ function getDisplayDataForTreemapChart(data) {
         return dataForSelectedCountry;
     }
 }
-
-
 function getTreeMapTooltipHtml(d) {
     if(!d.children) return "<div class='tooltipHeader'><strong>No data available</strong></div>"
     var html = "<div class='tooltipHeader'><strong>" + d.name + "</strong></div>";

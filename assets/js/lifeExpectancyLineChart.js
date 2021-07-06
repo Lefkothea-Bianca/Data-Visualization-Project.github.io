@@ -2,7 +2,7 @@ var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
 
-var lineChartMargin = {top: 80, right: 40, bottom: 55, left: 55},
+var lineChartMargin = {top: 90, right: 40, bottom: 55, left: 55},
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
     lineChartHeight = +lineChart.attr("height") - lineChartMargin.top - lineChartMargin.bottom;
 
@@ -86,7 +86,7 @@ function drawLineChart(data) {
         .append("path")
         .attr("class", "trianglePath")
         .attr("d", "M 0 0 4 2 0 4 1 2")
-        .style("fill", "steelblue");
+        .style("fill", "rgba(128,128,128,0.5)");
 
     //arrow for selected line
     lineChartSvg.append("svg:defs")

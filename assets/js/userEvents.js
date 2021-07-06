@@ -22,7 +22,7 @@ d3.helper.mapHelper = function(accessor){
 
             var tooltipText = accessor(d, i) || '';
             tooltipDiv.html(tooltipText);
-            d3.select(this).transition().duration(100).style("stroke-width", 1);
+            d3.select(this).transition().duration(100).style("stroke", "black").style("stroke-width", 1);
         })
         .on('mousemove', function(d, i) {
             var absoluteMousePos = d3.pointer(event, bodyNode);
