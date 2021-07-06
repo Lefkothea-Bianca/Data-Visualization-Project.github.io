@@ -96,13 +96,13 @@ function getDisplayDataForTreemapChart(data) {
     }
 }
 function getTreeMapTooltipHtml(d) {
-    if(!d.children) return "<div class='tooltipHeader'><strong>No data available</strong></div>"
+    if (!d.children) return "<div class='tooltipHeader'><strong>No data available</strong></div>"
     var html = "<div class='tooltipHeader'><strong>" + d.name + "</strong></div>";
     html += "<table class='text-right'>";
     for (let index = 0; index < d.children.length; index++) {
         const element = d.children[index];
-        if (element.sum) html += "<tr><td>" + element.name + ": </td><td>" + element.sum + "%</td></tr>";
+        if (element.sum) html += "<tr><td>" + element.name + ": </td><td>" + element.total + " (" + (element.sum * 100).toFixed(2) + " %)</td></tr>";
     }
-    html += "<tr class='bold'><td>Total: </td><td>" + d.sum + "%</td></tr></table>";
+    html += "<tr class='bold'><td>Total Deaths: </td><td>" + d.total + " (" + (d.sum * 100).toFixed(2) + " %)</td></tr></table>";
     return html;
 }
