@@ -141,6 +141,7 @@ function drawLineChart(data) {
             resetAllToMinOpacity();
             styleTarget(getSelectedLine());
         });
+        styleTarget(getSelectedLine());
 }
 
 function styleTarget(target) {
