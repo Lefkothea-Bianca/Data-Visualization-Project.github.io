@@ -36,8 +36,12 @@ body {
   float: right;
   position: absolute;
   right: 0;
-  font-size: 13px;
-  padding: 2px 40px;
+  font-size: 12px;
+  padding: 5px 35px;
+}
+
+.lineChartTable td {
+  border: 1px solid #ccc;
 }
 
 .tooltipHeader {
@@ -57,10 +61,10 @@ body {
 }
 
 .chartLegend {
-    background-color: #e9ecef82;
-    padding: 8px;    
-    color: #41464b;
-    min-height: 55px;
+  background-color: #e9ecef82;
+  padding: 5px 8px;
+  color: #41464b;
+  min-height: 48px;
 }
 
 .diagramHeader {

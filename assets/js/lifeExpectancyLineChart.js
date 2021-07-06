@@ -101,6 +101,13 @@ function drawLineChart(data) {
         .attr("d", "M 0 0 12 6 0 12 3 6")
         .style("fill", "steelblue");
 
+    //linetext
+    lineChartSvg.append("text")
+        .attr("class","lineText bold")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .style("fill", "steelblue");
+
     //line
     lineChartSvg.selectAll(".line")
         .data(displayData)
@@ -117,28 +124,63 @@ function drawLineChart(data) {
                 .y(function(d) { return d.expenditure && d.lifeExpectancy ? y(+d.lifeExpectancy) : 0; })
                 (d.values)
         })
-        .on("mouseover", function(d){
-            d3.selectAll(".linePath").style("stroke", "rgba(128,128,128,0.5)");
-            d3.selectAll(".trianglePath").style("fill", "rgba(128,128,128,0.5)");
-
+        .on("click", function(d) {
             var target = event.currentTarget;
-            d3.select(".lineChartTooltip").style("display", "block").html(lineChartTooltipHtml(target.__data__));
-            d3.select(target).style("stroke", "steelblue").attr("stroke-width", 4);
-            d3.select(target).attr("marker-end", "url(#triangleSelected)");
+            var targetData = target.__data__;
+            selectedCountry = targetData.key;
+        })
+        .on("mouseover", function(d){
+            resetAllToMinOpacity();
+
+            //Style Target
+            styleTarget(event.currentTarget, x, y);
         })
         .on("mouseout", function(d){
-            d3.selectAll(".linePath").style("stroke", "steelblue").attr("stroke-width", 0.5);
-            d3.selectAll(".linePath").attr("marker-end", "url(#triangle)");
-            //d3.select(".lineChartTooltip").style("display", "none");
+            resetAllToMinOpacity();
+            styleTarget(getSelectedLine(), x, y);
         });
 }
 
+function styleTarget(target, x, y) {
+    var targetData = target.__data__;
+    styleTargetLine(d3.select(target));
+    styleTargetLineText(targetData, x, y);
+    styleTooltip(targetData);
+}
+
+function styleTargetLine(target) {
+    target.style("stroke", "steelblue").attr("stroke-width", 4);
+    target.attr("marker-end", "url(#triangleSelected)");
+}
+
+function styleTargetLineText(targetData, x, y) {
+    d3.select(".lineText")
+        .style("display", "block")
+        .text(targetData.key)
+        .attr("transform", "translate(" + x(targetData.values[1].expenditure)+ "," + y(targetData.values[1].lifeExpectancy + 2) + ")");
+}
+
+function styleTooltip(targetData) {
+    d3.select(".lineChartTooltip").style("display", "block").html(lineChartTooltipHtml(targetData));
+}
+
+function resetAllToMinOpacity() {
+    d3.selectAll(".linePath").style("stroke", "rgba(128,128,128,0.5)").attr("stroke-width", 0.5);
+    d3.selectAll(".trianglePath").style("fill", "rgba(128,128,128,0.5)");
+    d3.selectAll(".linePath").attr("marker-end", "url(#triangle)");
+    d3.select(".lineChartTooltip").style("display", "none");
+    d3.select(".lineText").style("display", "none");
+}
+
+function getSelectedLine() {
+   return Array.from(d3.selectAll(".linePath")._groups[0]).filter(_=>_.__data__.key == selectedCountry)[0];
+}
+
 function lineChartTooltipHtml(d) {
-    var html = "<div class='lineChartTooltipHeader'><strong>" + d.key + "</strong></div>";
-    html += "<table class='text-right'>";
+    var html = "<table class='text-right lineChartTable'>";
     html += "<tr><th></th><th>2000</th><th>2018</th></tr>";
-    html += "<tr><th>Health Expenditure (US$):</th><td>"+d.values[0].expenditure+"</td><td>"+d.values[1].expenditure+"</td></tr>";
-    html += "<tr><th>Life Expectancy (years):</th><td>"+d.values[0].lifeExpectancy+"</td><td>"+d.values[1].lifeExpectancy+"</td></tr></table>";
+    html += "<tr><th>Health expenditure per capita:</th><td>"+d.values[0].expenditure+" (US$)</td><td>"+d.values[1].expenditure+" (US$)</td></tr>";
+    html += "<tr><th>Life expectancy:</th><td>"+d.values[0].lifeExpectancy+" years</td><td>"+d.values[1].lifeExpectancy+" years</td></tr></table>";
     return html;
 }
 
