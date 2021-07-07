@@ -1,7 +1,11 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
-var allGroup = [ { name: "GDP", value: "gdp" }, { name: "Healthcare expenditure", value: "expenditure" }]
+var allGroup = [
+    { name: "GDP", value: "gdp" },
+    { name: "Healthcare Expenditure", value: "healthCareExpenditure" },
+    { name: "Education Expenditure", value: "educationExpenditure" },
+]
 var group = "gdp";
 var startYearSelected = startYear;
 var endYearSelected = endYear;
@@ -215,12 +219,12 @@ function lineChartTooltipHtml(d) {
     if (!d || d.length == 0) {
         var factor = getLineChartFactorForHeader();
         var limitYears = getYearLimitsByFactor();
-        html = "<div>No data for selected year range.</div><div>For better results with ["+factor+"], query between years <span class='bold'>"+limitYears[0]+"</span> and <span class='bold'>"+limitYears[1]+"</span>.</div>";
+        html = "<div>No data for selected year range.</div><div>For better results with [" + factor + "], query between years <span class='bold'>" + limitYears[0] + "</span> and <span class='bold'>" + limitYears[1] + "</span>.</div>";
         return html;
     }
     var html = "<table class='text-right lineChartTable'>";
-    html += "<tr><th></th><th class='text-center'>"+startYearSelected+"</th><th class='text-center'>"+endYearSelected+"</th></tr>";
-    html += "<tr><th>"+getLineChartTableDataFactorLabel()+":</th><td>" + d.values[0].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td><td>" + d.values[1].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td></tr>";
+    html += "<tr><th></th><th class='text-center'>" + startYearSelected + "</th><th class='text-center'>" + endYearSelected + "</th></tr>";
+    html += "<tr><th>" + getLineChartTableDataFactorLabel() + ":</th><td>" + d.values[0].expenditure + " " + getLineChartTableDataFactorMetricLabel() + "</td><td>" + d.values[1].expenditure + " " + getLineChartTableDataFactorMetricLabel() + "</td></tr>";
     html += "<tr><th>Life expectancy:</th><td>" + d.values[0].lifeExpectancy + " years</td><td>" + d.values[1].lifeExpectancy + " years</td></tr></table>";
     return html;
 }
@@ -246,8 +250,22 @@ function getDisplayDataForLineChart(data) {
             && element.wdiInfoPerYear.length > 0) {
             var infoWDIMinYear = element.wdiInfoPerYear.filter(_ => _.year == startYearSelected.toString())[0];
             var infoWDIMaxYear = element.wdiInfoPerYear.filter(_ => _.year == endYearSelected.toString())[0];
-            var minValueParsed = group === "gdp" ? parseInt(infoWDIMinYear.gdpPerCapita) : parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
-            var maxValueParsed = group === "gdp" ? parseInt(infoWDIMaxYear.gdpPerCapita) : parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
+            var minValueParsed = 0;
+            var maxValueParsed = 0;
+            switch (group) {
+                case "healthCareExpenditure":
+                    minValueParsed = parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
+                    maxValueParsed = parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
+                    break;
+                case "gdp":
+                    minValueParsed = parseInt(infoWDIMinYear.gdpPerCapita);
+                    maxValueParsed = parseInt(infoWDIMaxYear.gdpPerCapita);
+                    break;
+                case "educationExpenditure":
+                    minValueParsed = parseInt(infoWDIMinYear.educationExpenditure);
+                    maxValueParsed = parseInt(infoWDIMaxYear.educationExpenditure);
+                    break;
+            }
             if (!isNaN(minValueParsed) && !isNaN(maxValueParsed)) {
                 var values = [];
                 var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == startYearSelected.toString())[0];
@@ -266,30 +284,34 @@ function getDisplayDataForLineChart(data) {
 }
 
 function getLineChartXLabel() {
-    switch(group) {
-        case "expenditure": return "Healthcare expenditure per capita (current US$)";
+    switch (group) {
+        case "healthCareExpenditure": return "Healthcare expenditure per capita (current US$)";
         case "gdp": return "GDP per capita, PPP (current international $)";
+        case "educationExpenditure": return "Adjusted savings: education expenditure (% of GNI)"
     }
 }
 
 function getLineChartTableDataFactorLabel() {
-    switch(group) {
-        case "expenditure": return "Health expenditure per capita";
+    switch (group) {
+        case "healthCareExpenditure": return "Health expenditure per capita";
         case "gdp": return "GDP per capita (PPP)";
+        case "educationExpenditure": return "Education expenditure"
     }
 }
 
 function getLineChartTableDataFactorMetricLabel() {
-    switch(group) {
-        case "expenditure": return "(US$)";
+    switch (group) {
+        case "healthCareExpenditure": return "(US$)";
         case "gdp": return "($)";
+        case "educationExpenditure": return "%"
     }
 }
 
 function getYearLimitsByFactor() {
-    switch(group) {
-        case "expenditure": return [2000, 2018];
+    switch (group) {
+        case "healthCareExpenditure": return [2000, 2018];
         case "gdp": return [1990, 2018];
+        case "educationExpenditure": return [1990, 2018];
     }
 }
 
@@ -299,14 +321,15 @@ function resetLineChartHeader() {
 }
 
 function getLineChartFactorForHeader() {
-    switch(group) {
-        case "expenditure": return "Healthcare expenditure";
+    switch (group) {
+        case "healthCareExpenditure": return "healthcare expenditure";
         case "gdp": return "GDP";
+        case "educationExpenditure": return "education expenditure"
     }
 }
 
 function getLineChartDomain(data) {
-    return  d3.max(data.map(_=>d3.max([_.values[0].expenditure,_.values[1].expenditure])));
+    return d3.max(data.map(_ => d3.max([_.values[0].expenditure, _.values[1].expenditure])));
 }
 
 function selectRangeButtonsManipulation() {
@@ -330,7 +353,7 @@ function selectRangeButtonsManipulation() {
         .append('option')
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; })
-        .property("selected", function(d){ return d === yearRange[yearRange.length - 1]; })
+        .property("selected", function (d) { return d === yearRange[yearRange.length - 1]; })
 
     d3.select("#selectButtonYearTo").on("change", function (d) {
         endYearSelected = d3.select(this).property("value");

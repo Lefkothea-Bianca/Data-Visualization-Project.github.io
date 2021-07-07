@@ -52,7 +52,7 @@ function setWDIInfoPerYear(info, d) {
         switch (d["Indicator Code"]) {
             case "SH.XPD.CHEX.PC.CD": infoPerYear.currentHealthExpenditurePerCapita = d[yearString]; break;
             case "NY.GDP.PCAP.PP.CD": infoPerYear.gdpPerCapita = d[yearString]; break;
-            case "SE.XPD.CTOT.ZS": infoPerYear.educationExpenditure = d[yearString]; break;
+            case "NY.ADJ.AEDU.GN.ZS": infoPerYear.educationExpenditure = d[yearString]; break;
         }
         info.wdiInfoPerYear.push(infoPerYear);
     }
