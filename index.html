@@ -50,7 +50,7 @@
                     <div id="worldMap" class="diagramWrapper relative">
                         <div class="chartLegend">
                             <div class="diagramHeader">Life Expectancy</div>
-                            <div class="diagramSubheader" class="yearElement">2019</div>
+                            <div class="diagramSubheader"><span class="yearElement"></span></div>
                         </div>
                         <svg id="lifeExpectancyWorldMap" width="540" height="300"></svg>
                     </div>
@@ -76,9 +76,9 @@
                         <span class="rangeLabel">1990</span>
                         <div class="range-wrap">
                             <div class="range-value" id="rangeV"></div>
-                            <input type="range" class="range slider" min="1990" max="2019" value="2019" id="myRange">
+                            <input type="range" class="range slider" min="1990" max="2018" value="2018" id="myRange">
                         </div>
-                        <span class="rangeLabel text-right">2019</span>
+                        <span class="rangeLabel text-right">2018</span>
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                         <div class="chartLegend">
                             <div class="diagramHeader">Causes of Death</div>
                             <div class="diagramSubheader">
-                                <span class="countryElement">The World</span>, <span class="yearElement">2019</span>
+                                <span class="countryElement">The World</span>, <span class="yearElement"></span>
                             </div>
                         </div>
                         <div id="causesOfDeathChart" width="540" height="420"></div>
@@ -130,15 +130,14 @@
     <script src="assets/library/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/library/typed.js/typed.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/visualization.js"></script>
     <script src="assets/js/worldMap.js"></script>
     <script src="assets/js/lifeExpectancyAreaChart.js"></script>
     <script src="assets/js/lifeExpectancyLineChart.js"></script>
     <script src="assets/js/dataSetup.js"></script>
     <script src="LifeExpectancyInfo.js"></script>
-    <script src="assets/js/visualization.js"></script>
     <script src="assets/js/userEvents.js"></script>
     <script src="assets/js/causesOfDeathChart.js"></script>
     <script src="assets/js/helper.js"></script>
 </body>
-
 </html>

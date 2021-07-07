@@ -1,6 +1,8 @@
 ﻿let fileData;
 let map = new Map();
 let mapColorScale;
+const startYear = 1990;
+const endYear = 2018;
 let selectedYear;
 let selectedCountry = "Global";
 

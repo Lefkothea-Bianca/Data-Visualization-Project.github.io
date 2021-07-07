@@ -57,6 +57,7 @@ d3.helper.mapHelper = function (accessor) {
 function setupEvents() {
     sliderEvents();
     sliderTooltipEvents();
+    initializeData();
 }
 
 function sliderEvents() {
@@ -72,6 +73,11 @@ function sliderEvents() {
     slider.onchange = function () {
         onSliderChangeEvents();
     }
+}
+
+function initializeData() {
+    selectedYear = startYear;
+    updateYearElements(selectedYear);
 }
 
 function updateYearElements(value) {

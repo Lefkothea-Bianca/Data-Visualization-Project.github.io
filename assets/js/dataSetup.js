@@ -46,9 +46,7 @@ function setHealthyLifeExpectancyData(d) {
 }
 
 function setWDIInfoPerYear(info, d) {
-    var minYear = 1990;
-    var maxYear = 2019;
-    for (var i = minYear; i <= maxYear; i++) {
+    for (var i = startYear; i <= endYear; i++) {
         var yearString = i.toString();
         var infoPerYear = getOrCreateWDIInfoPerYear(info, yearString);
         switch (d["Indicator Code"]) {
