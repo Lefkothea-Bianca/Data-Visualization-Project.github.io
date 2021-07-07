@@ -1,14 +1,13 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
-var allGroup = [{ name: "Healthcare expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
+var allGroup = [ { name: "GDP", value: "gdp" }, { name: "Healthcare expenditure", value: "expenditure" }]
+var group = "gdp";
 const startYear = 1990;
 const endYear = 2018;
 var startYearSelected = startYear;
 var endYearSelected = endYear;
 const yearRange = Array(endYear - startYear + 1).fill().map((_, idx) => startYear + idx);
-
-var group = "expenditure";
 
 var lineChartMargin = { top: 90, right: 40, bottom: 55, left: 55 },
     lineChartWidth = +lineChart.attr("width") - lineChartMargin.left - lineChartMargin.right,
