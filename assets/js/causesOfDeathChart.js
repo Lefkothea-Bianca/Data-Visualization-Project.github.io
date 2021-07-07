@@ -111,7 +111,7 @@ function getDisplayDataForTreemapChart(data) {
 }
 function getTreeMapTooltipHtml(d) {
     if (!d.children) return ""
-    var html = "<div class='tooltipHeader'><strong>" + d.name + "</strong></div>";
+    var html = "<div class='tooltipSubheader'><strong>" + d.name + "</strong></div>";
     html += "<table class='text-right'>";
     for (let index = 0; index < d.children.length; index++) {
         const element = d.children[index];
