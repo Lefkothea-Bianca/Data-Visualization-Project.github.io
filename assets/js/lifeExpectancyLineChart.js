@@ -1,7 +1,13 @@
 var lineChartSvg;
 var lineChart = d3.select("#lifeExpectancyLineChart");
 var xLineChart, yLineChart;
-var allGroup = [{ name: "Healthcare Expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
+var allGroup = [{ name: "Healthcare expenditure", value: "expenditure" }, { name: "GDP", value: "gdp" }]
+const startYear = 1990;
+const endYear = 2018;
+var startYearSelected = startYear;
+var endYearSelected = endYear;
+const yearRange = Array(endYear - startYear + 1).fill().map((_, idx) => startYear + idx);
+
 var group = "expenditure";
 
 var lineChartMargin = { top: 90, right: 40, bottom: 55, left: 55 },
@@ -29,6 +35,7 @@ function drawLifeExpectancyLineChart(data) {
         update(selectedOption)
     })
 
+    selectRangeButtonsManipulation();
     drawLineChart(data);
 }
 
@@ -40,10 +47,10 @@ function reDrawLineChart() {
 function update(selectedGroup) {
     group = selectedGroup;
     resetLineChartHeader();
-    reDrawAreaChartOnSelectGroupChanged();
+    reDrawLineChartOnUserInput();
 }
 
-function reDrawAreaChartOnSelectGroupChanged() {
+function reDrawLineChartOnUserInput() {
     lineChartSvg.selectAll('*').remove();
     drawLineChart(map);
 }
@@ -175,8 +182,8 @@ function styleTarget(target) {
         var targetData = target.__data__;
         styleTargetLine(d3.select(target));
         styleTargetLineText(targetData);
-        styleTooltip(targetData);
     }
+    styleTooltip(targetData);
 }
 
 function styleTargetLine(target) {
@@ -208,8 +215,14 @@ function getSelectedLine() {
 }
 
 function lineChartTooltipHtml(d) {
+    if (!d || d.length == 0) {
+        var factor = getLineChartFactorForHeader();
+        var limitYears = getYearLimitsByFactor();
+        html = "<div>No data for selected year range.</div><div>For better results with ["+factor+"], query between years <span class='bold'>"+limitYears[0]+"</span> and <span class='bold'>"+limitYears[1]+"</span>.</div>";
+        return html;
+    }
     var html = "<table class='text-right lineChartTable'>";
-    html += "<tr><th></th><th class='text-center'>2000</th><th class='text-center'>2018</th></tr>";
+    html += "<tr><th></th><th class='text-center'>"+startYearSelected+"</th><th class='text-center'>"+endYearSelected+"</th></tr>";
     html += "<tr><th>"+getLineChartTableDataFactorLabel()+":</th><td>" + d.values[0].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td><td>" + d.values[1].expenditure + " " +getLineChartTableDataFactorMetricLabel() + "</td></tr>";
     html += "<tr><th>Life expectancy:</th><td>" + d.values[0].lifeExpectancy + " years</td><td>" + d.values[1].lifeExpectancy + " years</td></tr></table>";
     return html;
@@ -228,25 +241,23 @@ function make_y_gridlines(y) {
 function getDisplayDataForLineChart(data) {
 
     var dataToDisplay = [];
-    var minYear = 2000;
-    var maxYear = 2018;
 
     data.forEach((element) => {
         if (element.lifeExpectancyInfoPerYear
             && element.lifeExpectancyInfoPerYear.length > 0
             && element.wdiInfoPerYear
             && element.wdiInfoPerYear.length > 0) {
-            var infoWDIMinYear = element.wdiInfoPerYear.filter(_ => _.year == minYear.toString())[0];
-            var infoWDIMaxYear = element.wdiInfoPerYear.filter(_ => _.year == maxYear.toString())[0];
+            var infoWDIMinYear = element.wdiInfoPerYear.filter(_ => _.year == startYearSelected.toString())[0];
+            var infoWDIMaxYear = element.wdiInfoPerYear.filter(_ => _.year == endYearSelected.toString())[0];
             var minValueParsed = group === "gdp" ? parseInt(infoWDIMinYear.gdpPerCapita) : parseInt(infoWDIMinYear.currentHealthExpenditurePerCapita);
             var maxValueParsed = group === "gdp" ? parseInt(infoWDIMaxYear.gdpPerCapita) : parseInt(infoWDIMaxYear.currentHealthExpenditurePerCapita);
             if (!isNaN(minValueParsed) && !isNaN(maxValueParsed)) {
                 var values = [];
-                var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == minYear.toString())[0];
-                var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == maxYear.toString())[0];
+                var infoLEMinYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == startYearSelected.toString())[0];
+                var infoLEMaxYear = element.lifeExpectancyInfoPerYear.filter(_ => _.year == endYearSelected.toString())[0];
 
-                values.push({ year: minYear.toString(), expenditure: minValueParsed, lifeExpectancy: infoLEMinYear.lifeExpectancyBoth });
-                values.push({ year: maxYear.toString(), expenditure: maxValueParsed, lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth })
+                values.push({ year: startYearSelected.toString(), expenditure: minValueParsed, lifeExpectancy: infoLEMinYear.lifeExpectancyBoth });
+                values.push({ year: endYearSelected.toString(), expenditure: maxValueParsed, lifeExpectancy: infoLEMaxYear.lifeExpectancyBoth })
                 dataToDisplay.push({
                     key: element.location,
                     values: values
@@ -278,6 +289,13 @@ function getLineChartTableDataFactorMetricLabel() {
     }
 }
 
+function getYearLimitsByFactor() {
+    switch(group) {
+        case "expenditure": return [2000, 2018];
+        case "gdp": return [1990, 2018];
+    }
+}
+
 function resetLineChartHeader() {
     var factor = document.getElementById("selectedFactor");
     factor.innerHTML = getLineChartFactorForHeader();
@@ -285,12 +303,41 @@ function resetLineChartHeader() {
 
 function getLineChartFactorForHeader() {
     switch(group) {
-        case "expenditure": return "healthcare expenditure";
+        case "expenditure": return "Healthcare expenditure";
         case "gdp": return "GDP";
     }
 }
 
 function getLineChartDomain(data) {
     return  d3.max(data.map(_=>d3.max([_.values[0].expenditure,_.values[1].expenditure])));
+}
+
+function selectRangeButtonsManipulation() {
+    d3.select("#selectButtonYearFrom")
+        .selectAll('myOptions')
+        .data(yearRange)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; })
+
+    d3.select("#selectButtonYearFrom").on("change", function (d) {
+        startYearSelected = d3.select(this).property("value");
+        reDrawLineChartOnUserInput();
+    })
+
+    d3.select("#selectButtonYearTo")
+        .selectAll('myOptions')
+        .data(yearRange)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; })
+        .property("selected", function(d){ return d === yearRange[yearRange.length - 1]; })
+
+    d3.select("#selectButtonYearTo").on("change", function (d) {
+        endYearSelected = d3.select(this).property("value");
+        reDrawLineChartOnUserInput();
+    })
 }
 

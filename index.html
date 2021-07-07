@@ -100,7 +100,9 @@
                     <div id="lineChart" class="diagramWrapper relative">
                         <div class="chartLegend">
                             <div class="diagramHeader">Life expectancy vs. <span id="selectedFactor" class="selectedFactor">healthcare expenditure</span></div>
-                            <div class="diagramSubheader">2000 to 2018</div>
+                            <div class="diagramSubheader">
+                                <select id="selectButtonYearFrom"></select> - <select id="selectButtonYearTo"></select>
+                            </div>
                             <select id="selectButton" class="factorButton"></select>
                         </div>
                         <div id="lineChartTooltip" class="lineChartTooltip text-right" style="display: none"></div>
