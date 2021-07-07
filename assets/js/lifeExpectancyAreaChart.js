@@ -156,8 +156,9 @@ function mousemove() {
         var absoluteMousePos = d3.pointer(event, this);
         var xPosition = absoluteMousePos[0];
 
+        var bottom = ((areaChartOverlay.attr("height") * totalYears)/90) + 60;
         areaChartTooltip
-            .style('bottom', (areaChartOverlay.attr("height") * totalYears)/90 +'px')
+            .style('bottom', bottom +'px')
             .style('position', 'absolute')
             .style('z-index', 1001);
         areaChartTooltip.html(getAreaChartTooltipHtml(d));
@@ -229,8 +230,8 @@ function setupTooltip() {
         .attr('x2',0)
         .attr('y1',0)
         .attr('y2',areaChartHeight)
-        .attr('stroke','rgba(0,0,0,0.2)')
-        .attr('stroke-width',1);
+        .attr('stroke','rgba(0,0,0,0.25)')
+        .attr('stroke-width',2);
 
     focus = svg.append("g")
         .attr("class", "focus")
