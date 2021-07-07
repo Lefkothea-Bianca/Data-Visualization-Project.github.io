@@ -47,6 +47,10 @@ function drawCauseOfDeathChart(d) {
         .padding(4)
         (root)
 
+    var opacity = d3.scaleLinear()
+        .domain([0, getTreeMapDomainMax(root.leaves())])
+        .range([.5,1]);
+
     treeMapSvg
         .selectAll("rect")
         .data(root.leaves())
@@ -58,6 +62,7 @@ function drawCauseOfDeathChart(d) {
         .attr('height', function (d) { return d.y1 - d.y0; })
         .style("stroke", "black")
         .style("fill", "#69b3a2")
+        .style("opacity", function(d){ return opacity(d.data.sum)})
         .on("mousemove", function (event, d) {
             if (d.data && d.data.children) {
                 var bodyNode = d3.select('body').node();
@@ -159,4 +164,8 @@ function wrapText(selection) {
             );
         }
     });
+}
+
+function getTreeMapDomainMax(data) {
+    return  d3.max(data.map(_=>_.data.sum));
 }
