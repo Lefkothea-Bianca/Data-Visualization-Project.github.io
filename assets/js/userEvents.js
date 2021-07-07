@@ -76,7 +76,7 @@ function sliderEvents() {
 }
 
 function initializeData() {
-    selectedYear = startYear;
+    selectedYear = endYear.toString();
     updateYearElements(selectedYear);
 }
 

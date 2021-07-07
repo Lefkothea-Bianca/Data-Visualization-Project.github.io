@@ -34,7 +34,6 @@ function loadData() {
 
         setCausesOfDeathData(fileData[6]);
 
-
         mapColorScale = setupMapColorScale();
         sortInfoMapByYear();
 

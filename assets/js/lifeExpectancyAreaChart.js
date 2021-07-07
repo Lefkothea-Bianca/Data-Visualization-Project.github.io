@@ -30,6 +30,7 @@ function reDrawAreaChart() {
 
 function drawAreaChart(data) {
     dataForSelectedCountry = getDisplayDataForAreaChart(data);
+    dataForSelectedCountry = filterDataByYearLimits();
 
     // Add X axis
     x = d3.scaleLinear()
@@ -279,4 +280,8 @@ function setupTooltip() {
 
         })
         .on("mousemove", mousemove);
+}
+
+function filterDataByYearLimits() {
+    return  dataForSelectedCountry.filter(_=>parseInt(_.year) >= startYear && parseInt(_.year) <= endYear);
 }
