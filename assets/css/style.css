@@ -225,6 +225,12 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     vertical-align: middle;
 }
 
+.sources {
+  font-size: 12px;
+  margin: 5px;
+  font-style: italic;
+}
+
 a {
   color: #00796b;
   text-decoration: none;
