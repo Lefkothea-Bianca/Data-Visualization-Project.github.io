@@ -56,7 +56,7 @@ function drawWorldMap(data) {
 
 function setupMapColorScale() {
     let colorScale = d3.scaleThreshold()
-        .domain([50, 60, 70, 80])
+        .domain([55, 65, 75, 80])
         .range(["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"])
         .unknown("#cccccc");
     return colorScale;
