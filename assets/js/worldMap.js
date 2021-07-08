@@ -56,7 +56,7 @@ function drawWorldMap(data) {
 
 function setupMapColorScale() {
     let colorScale = d3.scaleThreshold()
-        .domain([55, 65, 75, 80])
+        .domain([50, 60, 70, 80])
         .range(["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"])
         .unknown("#cccccc");
     return colorScale;
@@ -83,7 +83,7 @@ function getMapTooltipHtml(d) {
         html += "<div class='tooltipSubheader'><strong>No Data</strong></div>";
     }
     else {
-        let latestYearInfo = d.info.lifeExpectancyInfoPerYear[0];
+        let latestYearInfo = d.info.lifeExpectancyInfoPerYear.filter(_=>_.year == selectedYear)[0];
         html += "<div class='tooltipSubheader'><strong>Life Expectancy</strong></div>";
         html += "<table class='text-right'>";
         html += "<tr><td>Males:</td><td>" + latestYearInfo.lifeExpectancyMale + " years</td></tr>";
